@@ -10,6 +10,7 @@ class LogicSplitter : public AbsComponentElectronic
 
     public:
         LogicSplitter(int pinsCount=0)
+            :   AbsComponentElectronic("LogicTautology")
         {
 
             (pinsCount>3 || pinsCount<1) ? this->pinsCount=1 : this->pinsCount=pinsCount;
@@ -19,7 +20,7 @@ class LogicSplitter : public AbsComponentElectronic
             for (int key=1 ; key<=this->pinsCount ; ++key)
             {
 
-                this->pinCreate(key,QPointF(50,10+20*(key-1)),PIN_DIRECTION_OUTPUT);
+                this->pinCreate(key,QPointF(60,15+15*(key-1)),PIN_DIRECTION_OUTPUT);
 
             }
 
@@ -27,8 +28,8 @@ class LogicSplitter : public AbsComponentElectronic
             {
 
                 case 1: this->pin(1)->setY(30); break;
-                case 2: this->pin(1)->setY(10); this->pin(2)->setY(50); break;
-                case 3: this->pin(1)->setY(10); this->pin(2)->setY(50); this->pin(3)->setY(30); break;
+                case 2: this->pin(1)->setY(15); this->pin(2)->setY(45); break;
+                case 3: this->pin(1)->setY(15); this->pin(2)->setY(45); this->pin(3)->setY(30); break;
 
             }
 

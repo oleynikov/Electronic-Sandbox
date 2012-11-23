@@ -7,7 +7,7 @@
 #include <QString>
 #include "math.h"
 
-#include "_GameConfiguration.h"
+#include "_Configuration.h"
 #include "AbsSceneDependentObject.h"
 
 #include <QDebug>
@@ -18,7 +18,7 @@ class AbsComponent : public AbsSceneDependentObject
 
     public:
                         AbsComponent    (
-                                            int     width = 50,
+                                            int     width = 60,
                                             int     height = 60,
                                             QString iconName = "AbsComponent",
                                             bool    bordered = false,
@@ -106,10 +106,11 @@ class AbsComponent : public AbsSceneDependentObject
             if (this->dragable && this->mouseDown)
             {
 
+                int gridStepSize = Configuration::parameter("grid_step_size").toInt();
                 QPointF positionNew = event->scenePos()-this->mouseDownPoint;
                 QPointF positionDelta = positionNew - this->scenePos();
 
-                if (abs(positionDelta.x()) >= GameConfiguration::GRID_STEP)
+                if (abs(positionDelta.x()) >= gridStepSize)
                 {
 
                     if (positionNew.x() < 0)
@@ -118,8 +119,8 @@ class AbsComponent : public AbsSceneDependentObject
                         positionNew.setX(this->pointMax.x());
                     else
                     {
-                        int xDelta = positionDelta.x()/GameConfiguration::GRID_STEP;
-                        positionNew.setX(this->pos().x()+xDelta*GameConfiguration::GRID_STEP);
+                        int xDelta = positionDelta.x()/gridStepSize;
+                        positionNew.setX(this->pos().x()+xDelta*gridStepSize);
                     }
 
                     this->setX(positionNew.x());
@@ -127,7 +128,7 @@ class AbsComponent : public AbsSceneDependentObject
 
                 }
 
-                if (abs(positionDelta.y()) >= GameConfiguration::GRID_STEP)
+                if (abs(positionDelta.y()) >= gridStepSize)
                 {
 
                     if (positionNew.y() < 0)
@@ -136,8 +137,8 @@ class AbsComponent : public AbsSceneDependentObject
                         positionNew.setY(this->pointMax.y());
                     else
                     {
-                        int yDelta = positionDelta.y()/GameConfiguration::GRID_STEP;
-                        positionNew.setY(this->pos().y()+yDelta*GameConfiguration::GRID_STEP);
+                        int yDelta = positionDelta.y()/gridStepSize;
+                        positionNew.setY(this->pos().y()+yDelta*gridStepSize);
                     }
 
                     this->setY(positionNew.y());
@@ -223,9 +224,10 @@ class AbsComponent : public AbsSceneDependentObject
         {
 
             QRectF sceneRect = this->scene()->sceneRect();
+            int gridStepSize = Configuration::parameter("grid_step_size").toInt();
 
-            this->pointMax.setX(sceneRect.right()-fmod(sceneRect.right(),GameConfiguration::GRID_STEP)-this->width);
-            this->pointMax.setY(sceneRect.bottom()-fmod(sceneRect.bottom(),GameConfiguration::GRID_STEP)-this->height);
+            this->pointMax.setX(sceneRect.right()-fmod(sceneRect.right(),gridStepSize)-this->width);
+            this->pointMax.setY(sceneRect.bottom()-fmod(sceneRect.bottom(),gridStepSize)-this->height);
 
         }
 

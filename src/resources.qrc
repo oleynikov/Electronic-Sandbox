@@ -10,7 +10,6 @@
         <file>resources/images/icons/MainWindow.png</file>
         <file>resources/images/sprites/LogicalImplication.png</file>
         <file>resources/images/sprites/LogicalBiconditional.png</file>
-        <file>resources/images/sprites/AbsComponentElectronic.png</file>
         <file>resources/images/sprites/LogicTautology.png</file>
     </qresource>
 </RCC>

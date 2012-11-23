@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<parameter name="grid_step_size" value="15" /> <!-- You better don't change this value -->
+	<parameter name="grid_line_size" value="2" />
+	<parameter name="grid_line_color" value="EBEBEB" />
+	<parameter name="wire_color_enabled" value="072174004" />
+	<parameter name="wire_color_disabled" value="167194252" />
+	<parameter name="wire_color_disabled" value="070070070" />
+	<parameter name="wire_width_visible" value="3" />
+	<parameter name="wire_width_total" value="10" />
+	<parameter name="pin_color_enabled" value="072174004" />
+	<parameter name="pin_color_disabled" value="167194252" />
+	<parameter name="pin_color_disabled" value="070070070" />
+	<parameter name="pin_size_default" value="4" />
+	<parameter name="pin_size_selected" value="6" />
+</configuration>

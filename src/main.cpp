@@ -1,6 +1,6 @@
 #include <QApplication>
 
-#include "_GameWindow.h"
+#include "_WindowMain.h"
 
 int main(int argc, char* argv[])
 {

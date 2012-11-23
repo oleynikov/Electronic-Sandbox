@@ -37,7 +37,7 @@ class AbsPathFinder
     typedef SmartPointsWeighted::iterator           SmartPointsWeightedItr;
 
     public:
-        static Points             pathFindAStar(QPointF begin, QPointF end, Points blocked, bool diagonal=false)
+        static Points             pathFindAStar(QPointF begin, QPointF end, Points blocked, int step, bool diagonal=false)
         {
 
             SmartPointsWeighted         unexplored;
@@ -61,10 +61,10 @@ class AbsPathFinder
                     if (pointCurrent.value != begin)
                     {
                         unexplored.erase(unexplored.begin());
-                        neighbours = AbsPathFinder::getPointNeighbours(pointCurrent.value,blocked,diagonal);
+                        neighbours = AbsPathFinder::getPointNeighbours(pointCurrent.value,blocked,step,diagonal);
                         for (neighboursItr=neighbours.begin() ; neighboursItr!=neighbours.end() ; ++neighboursItr)
                         {
-                            g = pointCurrent.distance + 10;
+                            g = pointCurrent.distance + step;
                             h = (begin-(*neighboursItr)).manhattanLength();
                             unexplored.insert(g+h,SmartPoint(0,pointCurrent.id,g,*neighboursItr));
                             blocked.push_back(*neighboursItr);
@@ -79,7 +79,7 @@ class AbsPathFinder
             return Points();
 
         }
-        static Points             getRectPoints(QRectF rect)
+        static Points             getRectPoints(QRectF rect, int step)
         {
 
             Points points;
@@ -90,21 +90,21 @@ class AbsPathFinder
             br = rect.bottomRight();
             bl = rect.bottomLeft();
 
-            points += AbsPathFinder::getSegmentPoints(tl,tr);
-            points += AbsPathFinder::getSegmentPoints(tr,br);
-            points += AbsPathFinder::getSegmentPoints(bl,br);
-            points += AbsPathFinder::getSegmentPoints(tl,bl);
+            points += AbsPathFinder::getSegmentPoints(tl,tr,step);
+            points += AbsPathFinder::getSegmentPoints(tr,br,step);
+            points += AbsPathFinder::getSegmentPoints(bl,br,step);
+            points += AbsPathFinder::getSegmentPoints(tl,bl,step);
 
             return points;
 
         }
-        static Points             getSegmentPoints(QPointF begin, QPointF end)
+        static Points             getSegmentPoints(QPointF begin, QPointF end, int step)
         {
 
             Points points;
             QPointF delta;
 
-            begin.x() == end.x() ? delta = QPointF(0,10) : delta = QPointF(10,0);
+            begin.x() == end.x() ? delta = QPointF(0,step) : delta = QPointF(step,0);
 
             while (begin != end)
             {
@@ -121,23 +121,23 @@ class AbsPathFinder
         }
 
     private:
-        static Points             getPointNeighbours(QPointF point, Points blocked, bool diagonal=false)
+        static Points             getPointNeighbours(QPointF point, Points blocked, int step, bool diagonal=false)
         {
 
             Points neighboursAll, neighboursOpened;
             PointsItr pointsItr;
 
-            neighboursAll.push_back(point + QPointF(0,10));
-            neighboursAll.push_back(point + QPointF(10,0));
-            neighboursAll.push_back(point - QPointF(0,10));
-            neighboursAll.push_back(point - QPointF(10,0));
+            neighboursAll.push_back(point + QPointF(0,step));
+            neighboursAll.push_back(point + QPointF(step,0));
+            neighboursAll.push_back(point - QPointF(0,step));
+            neighboursAll.push_back(point - QPointF(step,0));
 
             if(diagonal)
             {
-                neighboursAll.push_back(point + QPointF(10,10));
-                neighboursAll.push_back(point + QPointF(10,-10));
-                neighboursAll.push_back(point - QPointF(10,10));
-                neighboursAll.push_back(point - QPointF(10,-10));
+                neighboursAll.push_back(point + QPointF(step,step));
+                neighboursAll.push_back(point + QPointF(step,-step));
+                neighboursAll.push_back(point - QPointF(step,step));
+                neighboursAll.push_back(point - QPointF(step,-step));
             }
 
             for (pointsItr=neighboursAll.begin() ; pointsItr!=neighboursAll.end() ; ++pointsItr)

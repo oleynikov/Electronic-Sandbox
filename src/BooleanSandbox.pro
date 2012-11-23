@@ -1,7 +1,8 @@
 RC_FILE = BooleanSandbox.rc
 
 SOURCES += \
-    main.cpp
+    main.cpp \
+    _Configuration.cpp
 
 HEADERS += \
     AbsComponent.h \
@@ -11,10 +12,7 @@ HEADERS += \
     AbsComponentToggleableManual.h \
     AbsComponentToggleableManualEF.h \
     AbsPinsConnector.h \
-    _GameConfiguration.h \
-    _GameWindow.h \
     AbsWire.h \
-    _AboutWindow.h \
     LogicTautology.h \
     LogicSplitter.h \
     LogicSource.h \
@@ -27,7 +25,12 @@ HEADERS += \
     LogicPin.h \
     AbsPathFinder.h \
     AbsGrid.h \
-    AbsSceneDependentObject.h
+    AbsSceneDependentObject.h \
+    _WindowMain.h \
+    _WindowAbout.h \
+    _Configuration.h
+
+QT += xml
 
 RESOURCES += \
     resources.qrc

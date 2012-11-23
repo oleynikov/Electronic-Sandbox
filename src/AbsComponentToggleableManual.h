@@ -13,7 +13,7 @@ class AbsComponentToggleableManual : public AbsComponentToggleable
         AbsComponentToggleableManual    (
                                             QString         iconName = "AbsComponentToggleableManual",
                                             ComponentType   logicType = COMPONENT_TYPE_LOGICAL,
-                                            int             width = 50,
+                                            int             width = 60,
                                             int             height = 60,
                                             bool            bordered = false,
                                             bool            dragable = true,

@@ -8,6 +8,7 @@
 #include <QBrush>
 #include <QColor>
 #include <AbsComponent.h>
+#include "_Configuration.h"
 
 enum PinDirection
 {
@@ -38,6 +39,13 @@ class AbsPin : public QGraphicsObject
         {
 
             this->setAlly(ally);
+
+            this->sizeDefault = Configuration::parameter("pin_size_default").toInt();
+            this->sizeSelected = Configuration::parameter("pin_size_selected").toInt();
+            QString cEnbStr = Configuration::parameter("pin_color_enabled");
+            QString cDisStr = Configuration::parameter("pin_color_disabled");
+            this->colorEnabled = qRgb(cEnbStr.mid(0,3).toInt(),cEnbStr.mid(3,3).toInt(),cEnbStr.mid(6,3).toInt());
+            this->colorDisabled = qRgb(cDisStr.mid(0,3).toInt(),cDisStr.mid(3,3).toInt(),cDisStr.mid(6,3).toInt());
 
         }
         AbsComponent*       getHost(void)const
@@ -157,13 +165,13 @@ class AbsPin : public QGraphicsObject
             QBrush brush(Qt::SolidPattern);
 
             this->getPowered()
-                ?   brush.setColor(QColor(72,174,4))
-                :   brush.setColor(QColor(167,194,252));
+                ?   brush.setColor(this->colorEnabled)
+                :   brush.setColor(this->colorDisabled);
 
             int circleRadius;
             this->getSelected()
-                ?   circleRadius = 7
-                :   circleRadius = 5;
+                ?   circleRadius = this->sizeSelected
+                :   circleRadius = this->sizeDefault;
 
             painter->setPen(pen);
             painter->setBrush(brush);
@@ -187,6 +195,12 @@ class AbsPin : public QGraphicsObject
             this->stateUpdate();
 
         }
+
+    private:
+        int                 sizeDefault;
+        int                 sizeSelected;
+        QColor              colorEnabled;
+        QColor              colorDisabled;
 
     signals:
         void                poweredChange();

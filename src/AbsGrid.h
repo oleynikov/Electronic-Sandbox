@@ -6,8 +6,10 @@
 #include <QPen>
 #include <QColor>
 
-#include "_GameConfiguration.h"
+#include "_Configuration.h"
 #include "AbsSceneDependentObject.h"
+
+#include <QDebug>
 
 class AbsGrid : public AbsSceneDependentObject
 {
@@ -19,6 +21,7 @@ class AbsGrid : public AbsSceneDependentObject
         {
 
             this->setZValue(-2);
+            this->stepSize = Configuration::parameter("grid_step_size").toInt();
 
         }
         virtual QRectF      boundingRect() const
@@ -35,10 +38,10 @@ class AbsGrid : public AbsSceneDependentObject
             painter->setPen(pen);
 
             for (unsigned int i=0 ; i<this->linesVer ; ++i)
-                painter->drawLine(GameConfiguration::GRID_STEP*i,0,GameConfiguration::GRID_STEP*i,this->sceneRect.height());
+                painter->drawLine(this->stepSize*i,0,this->stepSize*i,this->sceneRect.height());
 
             for (unsigned int j=0 ; j<this->linesHor ; ++j)
-                painter->drawLine(0,GameConfiguration::GRID_STEP*j,this->sceneRect.width(),GameConfiguration::GRID_STEP*j);
+                painter->drawLine(0,this->stepSize*j,this->sceneRect.width(),this->stepSize*j);
         }
 
     protected slots:
@@ -47,8 +50,8 @@ class AbsGrid : public AbsSceneDependentObject
 
             this->sceneRect = this->scene()->sceneRect();
 
-            linesVer = this->sceneRect.width() / GameConfiguration::GRID_STEP + 1;
-            linesHor = this->sceneRect.height() / GameConfiguration::GRID_STEP + 1;
+            linesVer = this->sceneRect.width() / this->stepSize + 1;
+            linesHor = this->sceneRect.height() / this->stepSize + 1;
 
             this->prepareGeometryChange();
             this->update(this->boundingRect());
@@ -56,6 +59,7 @@ class AbsGrid : public AbsSceneDependentObject
         }
 
     private:
+        int                 stepSize;
         QRectF              sceneRect;
         unsigned int        linesHor;
         unsigned int        linesVer;

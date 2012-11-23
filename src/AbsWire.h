@@ -6,6 +6,7 @@
 #include "AbsPin.h"
 #include "AbsComponent.h"
 #include "AbsPathFinder.h"
+#include "_Configuration.h"
 
 #include <QDebug>
 
@@ -30,6 +31,12 @@ class AbsWire : public QGraphicsObject
             QObject::connect(foo->getHost(),SIGNAL(dragged()),this,SLOT(pinDragged()));
             QObject::connect(bar->getHost(),SIGNAL(dragged()),this,SLOT(pinDragged()));
 
+            this->pen.setWidth(Configuration::parameter("wire_width_visible").toInt());
+            QString cEnbStr = Configuration::parameter("wire_color_enabled");
+            QString cDisStr = Configuration::parameter("wire_color_disabled");
+            this->colorEnabled = qRgb(cEnbStr.mid(0,3).toInt(),cEnbStr.mid(3,3).toInt(),cEnbStr.mid(6,3).toInt());
+            this->colorDisabled = qRgb(cDisStr.mid(0,3).toInt(),cDisStr.mid(3,3).toInt(),cDisStr.mid(6,3).toInt());
+
         }
         AbsPin*                 pin(int id)const
         {
@@ -52,14 +59,11 @@ class AbsWire : public QGraphicsObject
         virtual void            paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
         {
 
-            QPen pen;
-            pen.setWidth(3);
-
             this->pins[1]->getPowered()
-                ?   pen.setColor(QColor(72,174,4))
-                :   pen.setColor(QColor(167,194,252));
+                ?   this->pen.setColor(this->colorEnabled)
+                :   this->pen.setColor(this->colorDisabled);
 
-            painter->setPen(pen);
+            painter->setPen(this->pen);
             painter->drawPolyline(this->points.constData(),this->points.size());
 
         }
@@ -80,6 +84,9 @@ class AbsWire : public QGraphicsObject
         QVector<QPointF>        points;
         QRectF                  wireRect;
         QPainterPath            wireShape;
+        QPen                    pen;
+        QColor                  colorEnabled;
+        QColor                  colorDisabled;
         void                    pathUpdate()
         {
 
@@ -95,13 +102,16 @@ class AbsWire : public QGraphicsObject
                 pinIn = this->pins[0];
             }
 
+            int gridStepSize = Configuration::parameter("grid_step_size").toInt();
+            QPointF wireBegin = pinOut->scenePos()+QPointF(gridStepSize,0);
+            QPointF wireEnd = pinIn->scenePos()-QPointF(gridStepSize,0);
             QVector<QPointF> blocked;
-            blocked += AbsPathFinder::getRectPoints(this->pins[0]->getHost()->sceneBoundingRect());
-            blocked += AbsPathFinder::getRectPoints(this->pins[1]->getHost()->sceneBoundingRect());
+            blocked += AbsPathFinder::getRectPoints(this->pins[0]->getHost()->sceneBoundingRect(),gridStepSize);
+            blocked += AbsPathFinder::getRectPoints(this->pins[1]->getHost()->sceneBoundingRect(),gridStepSize);
 
             this->points.clear();
             this->points.push_back(pinOut->scenePos());
-            this->points += AbsPathFinder::pathFindAStar(pinOut->scenePos()+QPointF(10,0),pinIn->scenePos()-QPointF(10,0),blocked);
+            this->points += AbsPathFinder::pathFindAStar(wireBegin,wireEnd,blocked,gridStepSize);
             this->points.push_back(pinIn->scenePos());
 
             this->rectUpdate();
@@ -139,7 +149,7 @@ class AbsWire : public QGraphicsObject
 
             QVector<QPointF>::iterator pointsItr;
             QPainterPath shape;
-            int wWidth = 20;
+            int wWidth = Configuration::parameter("wire_width_total").toInt();
 
             for (pointsItr=this->points.begin()+1 ; pointsItr!=points.end() ; ++pointsItr)
             {

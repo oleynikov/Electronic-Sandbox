@@ -12,7 +12,7 @@ class LogicSource : public AbsComponentToggleableManual
         LogicSource()
         {
 
-            this->pinCreate(0,QPointF(50,30),PIN_DIRECTION_OUTPUT);
+            this->pinCreate(0,QPointF(60,30),PIN_DIRECTION_OUTPUT);
 
             QObject::connect(this,SIGNAL(toggled(bool)),this,SLOT(toggled(bool)));
 
