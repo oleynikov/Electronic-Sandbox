@@ -111,7 +111,8 @@ class GameWindow : public QMainWindow
                 if (wireOld) this->connectionDestroy(wireOld);
 
                 //  Establishing a new connection
-                AbsPinsConnector::pinsConnect(foo,bar);
+
+                AbsPin::connect(foo,bar);
                 AbsWire* wire = new AbsWire(foo,bar);
                 this->wires.push_back(wire);
                 this->graphicsScene.addItem(wire);
@@ -139,7 +140,7 @@ class GameWindow : public QMainWindow
 
             AbsPin* pinFoo = wire->pin(0);
             AbsPin* pinBar = wire->pin(1);
-            AbsPinsConnector::pinsDisconnect(pinFoo,pinBar);
+            AbsPin::disconnect(pinFoo,pinBar);
 
             int wireId = this->wires.lastIndexOf(wire);
             this->wires.remove(wireId);

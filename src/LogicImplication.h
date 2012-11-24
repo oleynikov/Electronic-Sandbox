@@ -19,6 +19,8 @@ class LogicImplication : public AbsComponentElectronic
             QObject::connect(this->pin(0),SIGNAL(poweredChange()),this,SLOT(pinInChanged()));
             QObject::connect(this->pin(1),SIGNAL(poweredChange()),this,SLOT(pinInChanged()));
 
+            this->pinsUpdate();
+
         }
 
     private slots:

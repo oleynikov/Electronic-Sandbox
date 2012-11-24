@@ -115,6 +115,20 @@ class AbsPin : public QGraphicsObject
             emit this->selectedChange(this);
 
         }
+        static void         connect(AbsPin* foo, AbsPin* bar)
+        {
+
+            foo->setAlly(bar);
+            bar->setAlly(foo);
+
+        }
+        static void         disconnect(AbsPin* foo, AbsPin* bar)
+        {
+
+            foo->setAlly(NULL);
+            bar->setAlly(NULL);
+
+        }
 
     protected:
         AbsComponent*       host;
