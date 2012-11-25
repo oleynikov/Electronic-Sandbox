@@ -123,8 +123,13 @@ class AbsComponent : public AbsSceneDependentObject
                         positionNew.setX(this->pos().x()+xDelta*gridStepSize);
                     }
 
-                    this->setX(positionNew.x());
-                    emit dragged();
+                    if(this->x() != positionNew.x())
+                    {
+
+                        this->setX(positionNew.x());
+                        emit dragged();
+
+                    }
 
                 }
 
@@ -141,8 +146,13 @@ class AbsComponent : public AbsSceneDependentObject
                         positionNew.setY(this->pos().y()+yDelta*gridStepSize);
                     }
 
-                    this->setY(positionNew.y());
-                    emit dragged();
+                    if(this->y() != positionNew.y())
+                    {
+
+                        this->setY(positionNew.y());
+                        emit dragged();
+
+                    }
 
                 }
 

@@ -78,7 +78,6 @@ class AbsWire : public QGraphicsObject
             }
 
         }
-
     private:
         AbsPin*                 pins[2];
         QVector<QPointF>        points;
@@ -123,6 +122,7 @@ class AbsWire : public QGraphicsObject
         void                    rectUpdate()
         {
 
+            int wWidth = Configuration::parameter("wire_width_total").toInt();
             QPointF topLeft = this->points.first();
             QPointF bottomRight = this->points.first();
             QVector<QPointF>::iterator pointItr;
@@ -131,14 +131,20 @@ class AbsWire : public QGraphicsObject
             {
 
                 QPointF point = *pointItr;
-                if (point.x()<topLeft.x())              topLeft.rx() = point.x();
-                else if (point.x()>bottomRight.x())     bottomRight.rx() = point.x();
-                if (point.y()<topLeft.y())              topLeft.ry() = point.y();
-                else if (point.y()>bottomRight.y())     bottomRight.ry() = point.y();
+
+                if (point.x()<topLeft.x())
+                    topLeft.rx() = point.x();
+                else if (point.x()>bottomRight.x())
+                    bottomRight.rx() = point.x();
+
+                if (point.y()<topLeft.y())
+                    topLeft.ry() = point.y();
+                else if (point.y()>bottomRight.y())
+                    bottomRight.ry() = point.y();
 
             }
 
-            this->wireRect = QRectF(topLeft,bottomRight);
+            this->wireRect = QRectF(topLeft-QPointF(wWidth/2,wWidth/2),bottomRight+QPointF(wWidth/2,wWidth/2));
 
             if (this->wireRect.width() == 0) this->wireRect.setWidth(1);
             if (this->wireRect.height() == 0) this->wireRect.setHeight(1);
@@ -147,26 +153,28 @@ class AbsWire : public QGraphicsObject
         void                    shapeUpdate()
         {
 
-            QVector<QPointF>::iterator pointsItr;
             QPainterPath shape;
+            QVector<QPointF>::iterator pointsItr;
             int wWidth = Configuration::parameter("wire_width_total").toInt();
 
             for (pointsItr=this->points.begin()+1 ; pointsItr!=points.end() ; ++pointsItr)
             {
 
+                QPointF pCurr = *pointsItr;
                 QPointF pPrev = *(pointsItr-1);
-                QPointF pNext = *pointsItr;
 
-                if(pPrev.x() > pNext.x() || pPrev.y() > pNext.y())
+                if(pPrev.x() > pCurr.x() || pPrev.y() > pCurr.y())
                 {
                     QPointF pTemp = pPrev;
-                    pPrev = pNext;
-                    pNext = pTemp;
+                    pPrev = pCurr;
+                    pCurr = pTemp;
 
                 }
 
-                QRectF rect(pPrev.x()-wWidth/2,pPrev.y()-wWidth/2,(pNext-pPrev).x()+wWidth,(pNext-pPrev).y()+wWidth);
-                shape.addRect(rect);
+                QPointF topLeft(pPrev.x()-wWidth/2,pPrev.y()-wWidth/2);
+                QPointF botRigh(pCurr.x()+wWidth/2,pCurr.y()+wWidth/2);
+
+                shape.addRect(QRectF(topLeft,botRigh));
 
             }
 
