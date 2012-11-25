@@ -12,7 +12,6 @@
 #include "ui_GameWindow.h"
 #include "AbsGrid.h"
 #include "AbsWire.h"
-#include "AbsPinsConnector.h"
 #include "LogicSource.h"
 #include "LogicIndicator.h"
 #include "LogicConjunction.h"
@@ -106,9 +105,11 @@ class GameWindow : public QMainWindow
                 //  Destroying old connections
                 AbsWire* wireOld = NULL;
                 wireOld = this->getWire(foo);
-                if (wireOld) this->connectionDestroy(wireOld);
+                if (wireOld)
+                    this->connectionDestroy(wireOld);
                 wireOld = this->getWire(bar);
-                if (wireOld) this->connectionDestroy(wireOld);
+                if (wireOld)
+                    this->connectionDestroy(wireOld);
 
                 //  Establishing a new connection
 

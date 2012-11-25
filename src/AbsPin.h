@@ -34,12 +34,12 @@ class AbsPin : public QGraphicsObject
                                     :   QGraphicsObject(host),
                                         host(host),
                                         direction(direction),
+                                        ally(NULL),
                                         powered(powered),
                                         selected(selected)
         {
 
             this->setAlly(ally);
-
             this->sizeDefault = Configuration::parameter("pin_size_default").toInt();
             this->sizeSelected = Configuration::parameter("pin_size_selected").toInt();
             QString cEnbStr = Configuration::parameter("pin_color_enabled");
@@ -87,15 +87,22 @@ class AbsPin : public QGraphicsObject
         void                setAlly(AbsPin* ally)
         {
 
-            this->ally = ally;
-            this->stateUpdate();
-
             if(ally)
             {
 
                 QObject::connect(ally,SIGNAL(poweredChange()),this,SLOT(allyStateChanged()));
 
             }
+
+            else if (!ally && this->ally)
+            {
+
+                QObject::disconnect(this->ally,SIGNAL(poweredChange()),this,SLOT(allyStateChanged()));
+
+            }
+
+            this->ally = ally;
+            this->stateUpdate();
 
         }
         void                setPowered(bool powered)
