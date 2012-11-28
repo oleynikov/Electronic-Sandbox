@@ -44,23 +44,23 @@ class GameWindow : public QMainWindow
                 this->grid = new AbsGrid();
                 this->graphicsScene.addItem(this->grid);
 
-                QObject::connect(this->ui.addLogicTautology,SIGNAL(triggered()),this,SLOT(componentCreated()));
-                QObject::connect(this->ui.addLogicSourceToggleable,SIGNAL(triggered()),this,SLOT(componentCreated()));
-                QObject::connect(this->ui.addLogicConjunction,SIGNAL(triggered()),this,SLOT(componentCreated()));
-                QObject::connect(this->ui.addLogicDisjunction,SIGNAL(triggered()),this,SLOT(componentCreated()));
-                QObject::connect(this->ui.addLogicNegation,SIGNAL(triggered()),this,SLOT(componentCreated()));
-                QObject::connect(this->ui.addLogicImplication,SIGNAL(triggered()),this,SLOT(componentCreated()));
-                QObject::connect(this->ui.addLogicBiconditional,SIGNAL(triggered()),this,SLOT(componentCreated()));
-                QObject::connect(this->ui.addLogicIndicator,SIGNAL(triggered()),this,SLOT(componentCreated()));
-                QObject::connect(this->ui.addLogicSplitterDouble,SIGNAL(triggered()),this,SLOT(componentCreated()));
-                QObject::connect(this->ui.addLogicSplitterTripple,SIGNAL(triggered()),this,SLOT(componentCreated()));
+                QObject::connect(this->ui.addLogicTautology,SIGNAL(triggered()),this,SLOT(componentCreate()));
+                QObject::connect(this->ui.addLogicSourceToggleable,SIGNAL(triggered()),this,SLOT(componentCreate()));
+                QObject::connect(this->ui.addLogicConjunction,SIGNAL(triggered()),this,SLOT(componentCreate()));
+                QObject::connect(this->ui.addLogicDisjunction,SIGNAL(triggered()),this,SLOT(componentCreate()));
+                QObject::connect(this->ui.addLogicNegation,SIGNAL(triggered()),this,SLOT(componentCreate()));
+                QObject::connect(this->ui.addLogicImplication,SIGNAL(triggered()),this,SLOT(componentCreate()));
+                QObject::connect(this->ui.addLogicBiconditional,SIGNAL(triggered()),this,SLOT(componentCreate()));
+                QObject::connect(this->ui.addLogicIndicator,SIGNAL(triggered()),this,SLOT(componentCreate()));
+                QObject::connect(this->ui.addLogicSplitterDouble,SIGNAL(triggered()),this,SLOT(componentCreate()));
+                QObject::connect(this->ui.addLogicSplitterTripple,SIGNAL(triggered()),this,SLOT(componentCreate()));
 
-                QObject::connect(this->ui.setLanguageRu,SIGNAL(triggered()),this,SLOT(languageChanged()));
-                QObject::connect(this->ui.setLanguageEn,SIGNAL(triggered()),this,SLOT(languageChanged()));
-                QObject::connect(this->ui.setLanguageDe,SIGNAL(triggered()),this,SLOT(languageChanged()));
-                QObject::connect(this->ui.setLanguageFr,SIGNAL(triggered()),this,SLOT(languageChanged()));
+                QObject::connect(this->ui.setLanguageRu,SIGNAL(triggered()),this,SLOT(languageSwitch()));
+                QObject::connect(this->ui.setLanguageEn,SIGNAL(triggered()),this,SLOT(languageSwitch()));
+                QObject::connect(this->ui.setLanguageDe,SIGNAL(triggered()),this,SLOT(languageSwitch()));
+                QObject::connect(this->ui.setLanguageFr,SIGNAL(triggered()),this,SLOT(languageSwitch()));
 
-                QObject::connect(this->ui.informationAbout,SIGNAL(triggered()),this,SLOT(infoAbout()));
+                QObject::connect(this->ui.informationAbout,SIGNAL(triggered()),this,SLOT(windowAboutShow()));
 
             }
 
@@ -79,22 +79,14 @@ class GameWindow : public QMainWindow
         }
 
     private:
-        QVector<AbsComponent*>      components;
-        QVector<AbsWire*>           wires;
+        Ui::GameWindow              ui;
+        AboutWindow*                windowAbout;
         QGraphicsScene              graphicsScene;
         AbsGrid*                    grid;
         AbsPin*                     pinActive;
-        AboutWindow*                windowAbout;
-        Ui::GameWindow              ui;
-        void                        componentSave(AbsComponent* component)
-        {
+        QVector<AbsComponent*>      components;
+        QVector<AbsWire*>           wires;
 
-            this->graphicsScene.addItem(component);
-            this->components.push_back(component);
-            QObject::connect(component,SIGNAL(deleted()),this,SLOT(componentDeleted()));
-            QObject::connect(component,SIGNAL(pinSelected(AbsPin*)),this,SLOT(pinSelected(AbsPin*)));
-
-        }
         void                        connectionEstablish(AbsPin* foo, AbsPin* bar)
         {
 
@@ -106,10 +98,10 @@ class GameWindow : public QMainWindow
                 AbsWire* wireOld = NULL;
                 wireOld = this->getWire(foo);
                 if (wireOld)
-                    this->connectionDestroy(wireOld);
+                    this->connectionRemove(wireOld);
                 wireOld = this->getWire(bar);
                 if (wireOld)
-                    this->connectionDestroy(wireOld);
+                    this->connectionRemove(wireOld);
 
                 //  Establishing a new connection
 
@@ -121,7 +113,7 @@ class GameWindow : public QMainWindow
                 bar->setSelected(false);
                 this->pinActive = NULL;
 
-                QObject::connect(wire,SIGNAL(deleted(AbsWire*)),this,SLOT(wireDeleted(AbsWire*)));
+                QObject::connect(wire,SIGNAL(deleted(AbsWire*)),this,SLOT(wireRemove(AbsWire*)));
 
             }
 
@@ -136,7 +128,7 @@ class GameWindow : public QMainWindow
             }
 
         }
-        void                        connectionDestroy(AbsWire* wire)
+        void                        connectionRemove(AbsWire* wire)
         {
 
             AbsPin* pinFoo = wire->pin(0);
@@ -180,7 +172,7 @@ class GameWindow : public QMainWindow
         }
 
     private slots:
-        void                        componentCreated()
+        void                        componentCreate()
         {
 
             QObject* sender = QObject::sender();
@@ -207,15 +199,23 @@ class GameWindow : public QMainWindow
             else if (sender == this->ui.addLogicIndicator)
                 component = new LogicIndicator();
 
-            if (component) this->componentSave(component);
+            if (component)
+            {
+
+                this->graphicsScene.addItem(component);
+                this->components.push_back(component);
+                QObject::connect(component,SIGNAL(componentRemove()),this,SLOT(componentRemove()));
+                QObject::connect(component,SIGNAL(pinSelect(AbsPin*)),this,SLOT(pinSelect(AbsPin*)));
+
+            }
 
         }
-        void                        componentDeleted()
+        void                        componentRemove()
         {
 
             AbsComponentElectronic* component = static_cast<AbsComponentElectronic*>(QObject::sender());
 
-            QMap<int,AbsPin*> pins = component->getPins();
+            QMap<int,AbsPin*> pins = component->pins();
             QMap<int,AbsPin*>::iterator pinsItr;
 
             for (pinsItr=pins.begin() ; pinsItr!=pins.end() ; ++pinsItr)
@@ -225,7 +225,7 @@ class GameWindow : public QMainWindow
                 if (wire)
                 {
 
-                    this->connectionDestroy(wire);
+                    this->connectionRemove(wire);
 
                 }
 
@@ -236,7 +236,7 @@ class GameWindow : public QMainWindow
             this->components.remove(componentId);
 
         }
-        void                        pinSelected(AbsPin* pin)
+        void                        pinSelect(AbsPin* pin)
         {
 
             //  If pin was activated
@@ -272,13 +272,13 @@ class GameWindow : public QMainWindow
             }
 
         }
-        void                        wireDeleted(AbsWire* wire)
+        void                        wireRemove(AbsWire* wire)
         {
 
-            this->connectionDestroy(wire);
+            this->connectionRemove(wire);
 
         }
-        void                        languageChanged()
+        void                        languageSwitch()
         {
 
             QObject* sender = QObject::sender();
@@ -296,7 +296,7 @@ class GameWindow : public QMainWindow
             this->setLanguage(language);
 
         }
-        void                        infoAbout()
+        void                        windowAboutShow()
         {
 
             this->windowAbout = new AboutWindow(this);

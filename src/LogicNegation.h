@@ -15,14 +15,10 @@ class LogicNegation : public AbsComponentElectronic
             this->pinCreate(0,QPointF(0,30),PIN_DIRECTION_INPUT);
             this->pinCreate(1,QPointF(60,30),PIN_DIRECTION_OUTPUT);
 
-            QObject::connect(this->pin(0),SIGNAL(poweredChange()),this,SLOT(pinInChanged()));
-
-            this->pinsUpdate();
-
         }
 
-    private slots:
-        void pinInChanged()
+    protected slots:
+        virtual void pinsUpdate()
         {
 
             this->pin(1)->setPowered(!this->pin(0)->getPowered());

@@ -25,11 +25,11 @@ class AbsWire : public QGraphicsObject
             this->pathUpdate();
             this->setZValue(-1);
 
-            QObject::connect(foo,SIGNAL(poweredChange()),this,SLOT(pinPowered()));
-            QObject::connect(bar,SIGNAL(poweredChange()),this,SLOT(pinPowered()));
+            QObject::connect(foo,SIGNAL(pinSwitch()),this,SLOT(pinSwitch()));
+            QObject::connect(bar,SIGNAL(pinSwitch()),this,SLOT(pinSwitch()));
 
-            QObject::connect(foo->getHost(),SIGNAL(dragged()),this,SLOT(pinDragged()));
-            QObject::connect(bar->getHost(),SIGNAL(dragged()),this,SLOT(pinDragged()));
+            QObject::connect(foo->getHost(),SIGNAL(componentDrag()),this,SLOT(componentDrag()));
+            QObject::connect(bar->getHost(),SIGNAL(componentDrag()),this,SLOT(componentDrag()));
 
             this->pen.setWidth(Configuration::parameter("wire_width_visible").toInt());
             QString cEnbStr = Configuration::parameter("wire_color_enabled");
@@ -67,10 +67,10 @@ class AbsWire : public QGraphicsObject
             painter->drawPolyline(this->points.constData(),this->points.size());
 
         }
-        virtual void            mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
+        virtual void            mousePressEvent(QGraphicsSceneMouseEvent* event)
         {
 
-            if (event->button() == Qt::RightButton)
+            if(event->button() == Qt::RightButton)
             {
 
                 emit this->deleted(this);
@@ -183,13 +183,13 @@ class AbsWire : public QGraphicsObject
         }
 
     private slots:
-        void                    pinDragged()
+        void                    componentDrag()
         {
 
             this->pathUpdate();
 
         }
-        void                    pinPowered()
+        void                    pinSwitch()
         {
 
             this->update(this->boundingRect());

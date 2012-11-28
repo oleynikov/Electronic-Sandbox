@@ -13,7 +13,6 @@ class LogicIndicator : public AbsComponentToggleable
         {
 
             this->pinCreate(0,QPointF(0,30),PIN_DIRECTION_INPUT);
-            QObject::connect(this->pin(0),SIGNAL(poweredChange()),this,SLOT(pinInChanged()));
 
         }
 

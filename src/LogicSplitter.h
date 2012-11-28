@@ -33,8 +33,6 @@ class LogicSplitter : public AbsComponentElectronic
 
             }
 
-            QObject::connect(this->pin(0),SIGNAL(poweredChange()),this,SLOT(pinInChanged()));
-
         }
 
     private:

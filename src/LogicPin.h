@@ -7,17 +7,8 @@ class LogicPin : public AbsPin
 {
 
     public:
-        LogicPin    (
-                        AbsComponent*   host,
-                        PinDirection    direction,
-                        bool            powered = false,
-                        bool            selected = false,
-                        AbsPin*         ally = NULL
-                    )
-                    :   AbsPin(host,direction,powered,selected,ally)
+        LogicPin (AbsComponent* host, PinDirection direction) : AbsPin(host,direction)
         {
-
-
 
         }
 

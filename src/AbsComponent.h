@@ -127,7 +127,7 @@ class AbsComponent : public AbsSceneDependentObject
                     {
 
                         this->setX(positionNew.x());
-                        emit dragged();
+                        emit componentDrag();
 
                     }
 
@@ -150,7 +150,7 @@ class AbsComponent : public AbsSceneDependentObject
                     {
 
                         this->setY(positionNew.y());
-                        emit dragged();
+                        emit componentDrag();
 
                     }
 
@@ -183,7 +183,7 @@ class AbsComponent : public AbsSceneDependentObject
             if (event->button() == Qt::RightButton)
             {
 
-                emit this->deleted();
+                emit this->componentRemove();
 
             }
 
@@ -251,8 +251,8 @@ class AbsComponent : public AbsSceneDependentObject
         }
 
     signals:
-        void            dragged();
-        void            deleted();
+        void            componentDrag();
+        void            componentRemove();
 
 };
 

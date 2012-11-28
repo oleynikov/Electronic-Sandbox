@@ -16,15 +16,10 @@ class LogicImplication : public AbsComponentElectronic
             this->pinCreate(1,QPointF(0,45),PIN_DIRECTION_INPUT);
             this->pinCreate(2,QPointF(60,30),PIN_DIRECTION_OUTPUT);
 
-            QObject::connect(this->pin(0),SIGNAL(poweredChange()),this,SLOT(pinInChanged()));
-            QObject::connect(this->pin(1),SIGNAL(poweredChange()),this,SLOT(pinInChanged()));
-
-            this->pinsUpdate();
-
         }
 
-    private slots:
-        void pinInChanged()
+    protected slots:
+        void pinsUpdate()
         {
 
             if (this->pin(0)->getPowered() && !this->pin(1)->getPowered())

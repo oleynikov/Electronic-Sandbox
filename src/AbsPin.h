@@ -18,28 +18,30 @@ enum PinDirection
 
 };
 
+enum PinState
+{
+
+    PIN_STATE_UNDEFINED,
+    PIN_STATE_DISABLED,
+    PIN_STATE_ENABLED
+
+};
+
 class AbsPin : public QGraphicsObject
 {
 
     Q_OBJECT
 
     public:
-                            AbsPin  (
-                                        AbsComponent*   host,
-                                        PinDirection    direction,
-                                        bool            powered = false,
-                                        bool            selected = false,
-                                        AbsPin*         ally = NULL
-                                    )
-                                    :   QGraphicsObject(host),
-                                        host(host),
-                                        direction(direction),
-                                        ally(NULL),
-                                        powered(powered),
-                                        selected(selected)
+                            AbsPin (AbsComponent* host, PinDirection direction)
+                                :   QGraphicsObject(host),
+                                    host(host),
+                                    direction(direction),
+                                    ally(NULL),
+                                    powered(false),
+                                    selected(false)
         {
 
-            this->setAlly(ally);
             this->sizeDefault = Configuration::parameter("pin_size_default").toInt();
             this->sizeSelected = Configuration::parameter("pin_size_selected").toInt();
             QString cEnbStr = Configuration::parameter("pin_color_enabled");
@@ -90,14 +92,14 @@ class AbsPin : public QGraphicsObject
             if(ally)
             {
 
-                QObject::connect(ally,SIGNAL(poweredChange()),this,SLOT(allyStateChanged()));
+                QObject::connect(ally,SIGNAL(pinSwitch()),this,SLOT(stateUpdate()));
 
             }
 
             else if (!ally && this->ally)
             {
 
-                QObject::disconnect(this->ally,SIGNAL(poweredChange()),this,SLOT(allyStateChanged()));
+                QObject::disconnect(this->ally,SIGNAL(pinSwitch()),this,SLOT(stateUpdate()));
 
             }
 
@@ -108,9 +110,14 @@ class AbsPin : public QGraphicsObject
         void                setPowered(bool powered)
         {
 
-            this->powered = powered;
-            this->update(this->boundingRect());
-            emit this->poweredChange();
+            if (powered != this->powered)
+            {
+
+                this->powered = powered;
+                emit this->pinSwitch();
+                this->update(this->boundingRect());
+
+            }
 
         }
         void                setSelected(bool active)
@@ -119,7 +126,7 @@ class AbsPin : public QGraphicsObject
             this->selected = active;
             this->prepareGeometryChange();
             this->update(this->boundingRect());
-            emit this->selectedChange(this);
+            emit this->pinSelect(this);
 
         }
         static void         connect(AbsPin* foo, AbsPin* bar)
@@ -143,29 +150,6 @@ class AbsPin : public QGraphicsObject
         AbsPin*             ally;
         bool                powered;
         bool                selected;
-        void                stateUpdate(void)
-        {
-
-            if (this->getDirection() == PIN_DIRECTION_INPUT)
-            {
-
-                if(this->getAlly())
-                {
-
-                    this->setPowered(this->getAlly()->getPowered());
-
-                }
-
-                else
-                {
-
-                    this->setPowered(false);
-
-                }
-
-            }
-
-        }
         virtual void        mousePressEvent(QGraphicsSceneMouseEvent* event)
         {
 
@@ -210,10 +194,27 @@ class AbsPin : public QGraphicsObject
         }
 
     protected slots:
-        void                allyStateChanged()
+        void                stateUpdate(void)
         {
 
-            this->stateUpdate();
+            if (this->getDirection() == PIN_DIRECTION_INPUT)
+            {
+
+                if(this->getAlly())
+                {
+
+                    this->setPowered(this->getAlly()->getPowered());
+
+                }
+
+                else
+                {
+
+                    this->setPowered(false);
+
+                }
+
+            }
 
         }
 
@@ -224,8 +225,8 @@ class AbsPin : public QGraphicsObject
         QColor              colorDisabled;
 
     signals:
-        void                poweredChange();
-        void                selectedChange(AbsPin*);
+        void                pinSwitch();
+        void                pinSelect(AbsPin*);
 
 };
 
