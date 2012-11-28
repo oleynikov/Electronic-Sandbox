@@ -67,7 +67,7 @@ class AbsWire : public QGraphicsObject
             painter->drawPolyline(this->points.constData(),this->points.size());
 
         }
-        virtual void            mousePressEvent(QGraphicsSceneMouseEvent* event)
+        virtual void            mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
         {
 
             if(event->button() == Qt::RightButton)

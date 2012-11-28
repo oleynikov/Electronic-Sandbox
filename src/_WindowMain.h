@@ -16,7 +16,6 @@
 #include "LogicIndicator.h"
 #include "LogicConjunction.h"
 #include "LogicDisjunction.h"
-#include "LogicTautology.h"
 #include "LogicNegation.h"
 #include "LogicImplication.h"
 #include "LogicBiconditional.h"
@@ -181,7 +180,7 @@ class GameWindow : public QMainWindow
             if (sender == this->ui.addLogicSourceToggleable)
                 component = new LogicSource();
             else if (sender == this->ui.addLogicTautology)
-                component = new LogicTautology();
+                component = new LogicSplitter(1);
             else if (sender == this->ui.addLogicNegation)
                 component = new LogicNegation();
             else if (sender == this->ui.addLogicConjunction)

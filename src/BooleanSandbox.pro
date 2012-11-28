@@ -12,7 +12,6 @@ HEADERS += \
     AbsComponentToggleableManual.h \
     AbsComponentToggleableManualEF.h \
     AbsWire.h \
-    LogicTautology.h \
     LogicSplitter.h \
     LogicSource.h \
     LogicNegation.h \

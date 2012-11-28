@@ -16,8 +16,8 @@ class LogicIndicator : public AbsComponentToggleable
 
         }
 
-    private slots:
-        void pinInChanged()
+    protected slots:
+        void pinsUpdate()
         {
 
             this->setToggled(this->pin(0)->getPowered());

@@ -2,6 +2,7 @@
 #define LOGICALSPLITTER_H
 
 #include "AbsComponentElectronic.h"
+#include <QDebug>
 
 class LogicSplitter : public AbsComponentElectronic
 {
@@ -9,18 +10,17 @@ class LogicSplitter : public AbsComponentElectronic
     Q_OBJECT
 
     public:
-        LogicSplitter(int pinsCount=0)
-            :   AbsComponentElectronic("LogicTautology")
+        LogicSplitter(int pinsCount=0) : AbsComponentElectronic("LogicTautology")
         {
 
             (pinsCount>3 || pinsCount<1) ? this->pinsCount=1 : this->pinsCount=pinsCount;
 
             this->pinCreate(0,QPointF(0,30),PIN_DIRECTION_INPUT);
 
-            for (int key=1 ; key<=this->pinsCount ; ++key)
+            for (int key=0 ; key<this->pinsCount ; ++key)
             {
 
-                this->pinCreate(key,QPointF(60,15+15*(key-1)),PIN_DIRECTION_OUTPUT);
+                this->pinCreate(key+1,QPointF(60,15+15*(key-1)),PIN_DIRECTION_OUTPUT);
 
             }
 
@@ -35,23 +35,28 @@ class LogicSplitter : public AbsComponentElectronic
 
         }
 
-    private:
-        int pinsCount;
-
-    private slots:
-        void pinInChanged()
+    protected slots:
+        void pinsUpdate()
         {
 
             bool inputState = this->pin(0)->getPowered();
 
-            for (int key=1 ; key<=this->pinsCount ; ++key)
+            for (int key=0 ; key<this->pinsCount ; ++key)
             {
 
-                this->pin(key)->setPowered(inputState);
+                if (this->pin(key+1))
+                {
+
+                    this->pin(key+1)->setPowered(inputState);
+
+                }
 
             }
 
         }
+
+    private:
+        int pinsCount;
 
 };
 

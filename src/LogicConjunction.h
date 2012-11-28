@@ -18,8 +18,8 @@ class LogicConjunction : public AbsComponentElectronic
 
         }
 
-    private slots:
-        void pinInChanged()
+    protected slots:
+        void pinsUpdate()
         {
 
             if (this->pin(0)->getPowered() && this->pin(1)->getPowered())
