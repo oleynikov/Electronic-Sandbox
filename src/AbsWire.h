@@ -6,11 +6,12 @@
 #include "AbsPin.h"
 #include "AbsComponent.h"
 #include "AbsPathFinder.h"
+#include "AbsSceneDependentObject.h"
 #include "_Configuration.h"
 
 #include <QDebug>
 
-class AbsWire : public QGraphicsObject
+class AbsWire : public AbsSceneDependentObject
 {
 
     Q_OBJECT
@@ -78,6 +79,15 @@ class AbsWire : public QGraphicsObject
             }
 
         }
+
+    protected:
+        virtual void            sceneRectChangeHandler()
+        {
+
+            this->pathUpdate();
+
+        }
+
     private:
         AbsPin*                 pins[2];
         QVector<QPointF>        points;
@@ -104,13 +114,18 @@ class AbsWire : public QGraphicsObject
             int gridStepSize = Configuration::parameter("grid_step_size").toInt();
             QPointF wireBegin = pinOut->scenePos()+QPointF(gridStepSize,0);
             QPointF wireEnd = pinIn->scenePos()-QPointF(gridStepSize,0);
-            QVector<QPointF> blocked;
-            blocked += AbsPathFinder::getRectPoints(this->pins[0]->getHost()->sceneBoundingRect(),gridStepSize);
-            blocked += AbsPathFinder::getRectPoints(this->pins[1]->getHost()->sceneBoundingRect(),gridStepSize);
+            QVector<QPointF> pointsBlocked;
+            QVector<QPointF> pointsAvaliable;
+
+            pointsBlocked += AbsPathFinder::getRectPerimeterPoints(this->pins[0]->getHost()->sceneBoundingRect(),gridStepSize);
+            pointsBlocked += AbsPathFinder::getRectPerimeterPoints(this->pins[1]->getHost()->sceneBoundingRect(),gridStepSize);
+
+            QRectF sceneRect = QRectF(this->sceneRect.topLeft()-QPointF(gridStepSize,gridStepSize),this->sceneRect.bottomRight()+QPointF(gridStepSize,gridStepSize));
+            pointsAvaliable = AbsPathFinder::getRectInnerPoints(sceneRect,gridStepSize);
 
             this->points.clear();
             this->points.push_back(pinOut->scenePos());
-            this->points += AbsPathFinder::pathFindAStar(wireBegin,wireEnd,blocked,gridStepSize);
+            this->points += AbsPathFinder::pathFindAStar(wireBegin,wireEnd,pointsAvaliable,pointsBlocked,gridStepSize);
             this->points.push_back(pinIn->scenePos());
 
             this->rectUpdate();

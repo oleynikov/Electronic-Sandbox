@@ -228,16 +228,12 @@ class AbsComponent : public AbsSceneDependentObject
             this->update(this->boundingRect());
 
         }
-
-    protected slots:
-        virtual void    sceneRectChanged(QRectF)
+        virtual void    sceneRectChangeHandler()
         {
 
-            QRectF sceneRect = this->scene()->sceneRect();
             int gridStepSize = Configuration::parameter("grid_step_size").toInt();
-
-            this->pointMax.setX(sceneRect.right()-fmod(sceneRect.right(),gridStepSize)-this->width);
-            this->pointMax.setY(sceneRect.bottom()-fmod(sceneRect.bottom(),gridStepSize)-this->height);
+            this->pointMax.setX(this->sceneRect.right()-fmod(this->sceneRect.right(),gridStepSize)-this->width);
+            this->pointMax.setY(this->sceneRect.bottom()-fmod(this->sceneRect.bottom(),gridStepSize)-this->height);
 
         }
 

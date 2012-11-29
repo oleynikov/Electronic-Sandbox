@@ -45,10 +45,8 @@ class AbsGrid : public AbsSceneDependentObject
         }
 
     protected slots:
-        virtual void        sceneRectChanged(QRectF)
+        virtual void        sceneRectChangeHandler()
         {
-
-            this->sceneRect = this->scene()->sceneRect();
 
             linesVer = this->sceneRect.width() / this->stepSize + 1;
             linesHor = this->sceneRect.height() / this->stepSize + 1;
@@ -60,10 +58,8 @@ class AbsGrid : public AbsSceneDependentObject
 
     private:
         int                 stepSize;
-        QRectF              sceneRect;
         unsigned int        linesHor;
         unsigned int        linesVer;
-        static const int    PEN_WIDTH = 10;
 
 };
 
