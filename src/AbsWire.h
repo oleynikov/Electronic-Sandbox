@@ -23,7 +23,6 @@ class AbsWire : public AbsSceneDependentObject
             pins[0] = foo;
             pins[1] = bar;
 
-            this->pathUpdate();
             this->setZValue(-1);
 
             QObject::connect(foo,SIGNAL(pinSwitch()),this,SLOT(pinSwitch()));
@@ -38,6 +37,7 @@ class AbsWire : public AbsSceneDependentObject
             this->colorEnabled = qRgb(cEnbStr.mid(0,3).toInt(),cEnbStr.mid(3,3).toInt(),cEnbStr.mid(6,3).toInt());
             this->colorDisabled = qRgb(cDisStr.mid(0,3).toInt(),cDisStr.mid(3,3).toInt(),cDisStr.mid(6,3).toInt());
 
+            this->pathUpdate();
         }
         AbsPin*                 pin(int id)const
         {

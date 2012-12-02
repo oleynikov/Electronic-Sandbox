@@ -125,7 +125,7 @@ class AbsPathFinder
 
             begin.x() == end.x() ? delta = QPointF(0,step) : delta = QPointF(step,0);
 
-            while (begin != end)
+            while (begin.x() <= end.x() && begin.y() <= end.y())
             {
 
                 points.push_back(begin);
