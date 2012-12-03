@@ -6,7 +6,7 @@
 #include <QMultiMap>
 #include <QRectF>
 
-struct SmartPoint
+struct SPoint
 {
 
     int         id;
@@ -14,7 +14,7 @@ struct SmartPoint
     int         distance;
     QPointF     point;
 
-    SmartPoint(QPointF value=QPointF(), int parent=-1, int distance=0, int id=0)
+    SPoint(QPointF value=QPointF(), int parent=-1, int distance=0, int id=0)
         :   id(id), parent(parent), distance(distance), point(value)
     {
 
@@ -22,62 +22,82 @@ struct SmartPoint
 
 };
 
+enum Algorithm
+{
+
+    ALGORITHM_ASTAR
+
+};
+
+typedef QVector<QPointF>                Points;
+typedef Points::iterator                PointsItr;
+typedef QList<SPoint>                   SPoints;
+typedef SPoints::iterator               SPointsItr;
+typedef QMultiMap<float,SPoint>         SPointsWeighted;
+typedef SPointsWeighted::iterator       SPointsWeightedItr;
+
 class AbsPathFinder
 {
 
-    typedef QVector<QPointF>                        Points;
-    typedef Points::iterator                        PointsItr;
-    typedef QList<SmartPoint>                       SmartPoints;
-    typedef SmartPoints::iterator                   SmartPointsItr;
-    typedef QMultiMap<float,SmartPoint>             SmartPointsWeighted;
-    typedef SmartPointsWeighted::iterator           SmartPointsWeightedItr;
-
     public:
-        static Points             pathFindAStar(QPointF begin, QPointF end, Points avaliable, Points blocked, int step, bool diagonal=false)
+        static Points                   pathFindAStar(QPointF pBegin, QPointF pEnd, Points pOpen, Points pClosed, int pStep, bool pDiagonal=false, Algorithm=ALGORITHM_ASTAR)
         {
 
-            SmartPointsWeighted         unexplored;
-            SmartPointsWeightedItr      unexploredItr;
-            SmartPoints                 explored;
-            Points                      neighbours;
-            PointsItr                   neighboursItr;
-            SmartPoint                  pointCurrent;
-            int                         g;
-            int                         h;
-
-            if (begin!=end && !blocked.contains(begin) && !blocked.contains(end))
+            if (
+                    pBegin!=pEnd
+                        &&
+                    !pClosed.contains(pBegin)
+                        &&
+                    !pClosed.contains(pEnd)
+                        &&
+                    (
+                        pOpen.empty()
+                            ||
+                        (
+                            pOpen.contains(pBegin)
+                                &&
+                            pOpen.contains(pEnd)
+                        )
+                    )
+                )
             {
-                unexplored.insert(0,SmartPoint(end));
-                blocked.push_back(end);
-
+                SPointsWeighted pUnexplored;
+                SPoints pExplored;
+                pUnexplored.insert(0,SPoint(pEnd));
+                pClosed.push_back(pEnd);
                 do
                 {
-                    pointCurrent = unexplored.begin().value();
-                    pointCurrent.id = explored.size();
-                    explored.push_back(pointCurrent);
-                    if (pointCurrent.point != begin)
+                    SPoint pointCurrent = pUnexplored.begin().value();
+                    pointCurrent.id = pExplored.size();
+                    pExplored.push_back(pointCurrent);
+                    pClosed.push_back(pointCurrent.point);
+                    if (pointCurrent.point != pBegin)
                     {
-                        unexplored.erase(unexplored.begin());
-                        neighbours = AbsPathFinder::getPointNeighbours(pointCurrent.point,avaliable,blocked,step,diagonal);
-                        for (neighboursItr=neighbours.begin() ; neighboursItr!=neighbours.end() ; ++neighboursItr)
+                        pUnexplored.erase(pUnexplored.begin());
+                        Points neighbours = AbsPathFinder::getNeighbourPoints(pointCurrent.point,pOpen,pClosed,pStep,pDiagonal);
+                        for (PointsItr neighboursItr=neighbours.begin() ; neighboursItr!=neighbours.end() ; ++neighboursItr)
                         {
-                            g = pointCurrent.distance + step;
-                            h = (begin-(*neighboursItr)).manhattanLength();
-                            unexplored.insert(g+h,SmartPoint(*neighboursItr,pointCurrent.id,g));
-                            blocked.push_back(*neighboursItr);
-
+                            int g = pointCurrent.distance + pStep;
+                            int h = (pBegin-(*neighboursItr)).manhattanLength();
+                            SPoint pNeighbour(*neighboursItr,pointCurrent.id,g);
+                            SPointsWeightedItr pUnexploredNew = AbsPathFinder::sPointWeightedFind(pUnexplored,pNeighbour);
+                            if (pUnexploredNew != pUnexplored.end())
+                            {
+                                pUnexplored.erase(pUnexploredNew);
+                            }
+                            pUnexplored.insert(g+h,pNeighbour);
                         }
                     }
                     else
-                        return AbsPathFinder::pathUnwind(explored);
+                    {
+                        return AbsPathFinder::pathUnwind(pExplored);
+                    }
                 }
-                while(!unexplored.isEmpty());
+                while(!pUnexplored.isEmpty());
             }
-
             return Points();
-
         }
-        static Points             getRectPerimeterPoints(QRectF rect, int step)
+        static Points                   getRectPerimeterPoints(QRectF rect, int step)
         {
 
             Points points;
@@ -96,7 +116,7 @@ class AbsPathFinder
             return points;
 
         }
-        static Points             getRectInnerPoints(QRectF rect, int step)
+        static Points                   getRectInnerPoints(QRectF rect, int step)
         {
 
             Points points;
@@ -117,7 +137,7 @@ class AbsPathFinder
             return points;
 
         }
-        static Points             getSegmentPoints(QPointF begin, QPointF end, int step)
+        static Points                   getSegmentPoints(QPointF begin, QPointF end, int step)
         {
 
             Points points;
@@ -140,7 +160,7 @@ class AbsPathFinder
         }
 
     private:
-        static Points             getPointNeighbours(QPointF point, Points avaliable, Points blocked, int step, bool diagonal=false)
+        static Points                   getNeighbourPoints(QPointF point, Points avaliable, Points blocked, int step, bool diagonal=false)
         {
 
             Points neighboursAll, neighboursAvaliable;
@@ -153,23 +173,41 @@ class AbsPathFinder
 
             if(diagonal)
             {
+
                 neighboursAll.push_back(point + QPointF(step,step));
                 neighboursAll.push_back(point + QPointF(step,-step));
                 neighboursAll.push_back(point - QPointF(step,step));
                 neighboursAll.push_back(point - QPointF(step,-step));
+
             }
 
             for (pointsItr=neighboursAll.begin() ; pointsItr!=neighboursAll.end() ; ++pointsItr)
-                if (!blocked.contains(*pointsItr) && avaliable.contains(*pointsItr))
+            {
+
+                if  (
+                        !blocked.contains(*pointsItr)
+                            &&
+                        (
+                            avaliable.empty()
+                                ||
+                            avaliable.contains(*pointsItr)
+                        )
+                    )
+
+                {
+
                     neighboursAvaliable.push_back(*pointsItr);
+
+                }
+            }
 
             return neighboursAvaliable;
 
         }
-        static Points             pathUnwind(SmartPoints points)
+        static Points                   pathUnwind(SPoints points)
         {
             Points path;
-            SmartPoint point;
+            SPoint point;
 
             while (points.size() > 0)
             {
@@ -187,7 +225,24 @@ class AbsPathFinder
             return path;
 
         }
-};
+        static SPointsWeightedItr       sPointWeightedFind(SPointsWeighted points, SPoint point)
+        {
 
+            for (SPointsWeightedItr itr=points.begin() ; itr!=points.end() ; ++itr)
+            {
+
+                if (itr.value().point == point.point)
+                {
+
+                    return itr;
+
+                }
+
+            }
+
+            return points.end();
+
+        }
+};
 
 #endif // ABSPATHFINDER_H

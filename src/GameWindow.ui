@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
+    <width>645</width>
     <height>501</height>
    </rect>
   </property>
@@ -128,7 +128,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>640</width>
+     <width>645</width>
      <height>21</height>
     </rect>
    </property>
@@ -146,7 +146,6 @@
     <addaction name="addLogicTautology"/>
     <addaction name="addLogicSplitterDouble"/>
     <addaction name="addLogicSplitterTripple"/>
-    <addaction name="separator"/>
     <addaction name="addLogicConjunction"/>
     <addaction name="addLogicDisjunction"/>
     <addaction name="addLogicImplication"/>
