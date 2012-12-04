@@ -4,147 +4,138 @@
 <context>
     <name>AboutWindow</name>
     <message>
-        <location filename="AboutWindow.ui" line="26"/>
+        <location filename="WindowAbout.ui" line="26"/>
         <source>About</source>
         <translation>Über das Programm</translation>
     </message>
     <message utf8="true">
-        <location filename="AboutWindow.ui" line="38"/>
+        <location filename="WindowAbout.ui" line="38"/>
         <source>© Oleynikov Nikolay - 2012</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="AboutWindow.ui" line="57"/>
+        <location filename="WindowAbout.ui" line="57"/>
         <source>Boolean Sandbox</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="AboutWindow.ui" line="73"/>
+        <location filename="WindowAbout.ui" line="73"/>
         <source>v. 1.3.12</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="AboutWindow.ui" line="86"/>
+        <location filename="WindowAbout.ui" line="86"/>
         <source>OleynikovNY@mail.ru</source>
         <translation></translation>
     </message>
 </context>
 <context>
-    <name>GameWindow</name>
+    <name>WindowMain</name>
     <message>
-        <location filename="GameWindow.ui" line="44"/>
-        <source>Boolean sandbox</source>
+        <location filename="WindowMain.ui" line="26"/>
+        <source>Boolean Sandbox</source>
         <translation>Boolean sandbox</translation>
     </message>
     <message>
-        <location filename="GameWindow.ui" line="140"/>
-        <source>Logic gates</source>
-        <translation>Logikgatter</translation>
+        <location filename="WindowMain.ui" line="76"/>
+        <source>Logic components</source>
+        <translation>Logik komponenten</translation>
     </message>
     <message>
-        <location filename="GameWindow.ui" line="154"/>
-        <source>Logic source</source>
-        <translation>Logikquelle</translation>
+        <location filename="WindowMain.ui" line="100"/>
+        <source>Source</source>
+        <translation>Quelle</translation>
     </message>
     <message>
-        <location filename="GameWindow.ui" line="160"/>
-        <source>Logic indicators</source>
-        <translation>Logic Indikatoren</translation>
+        <location filename="WindowMain.ui" line="125"/>
+        <source>YES</source>
+        <translation></translation>
     </message>
     <message>
-        <location filename="GameWindow.ui" line="166"/>
-        <source>Settings</source>
-        <translation>Einstellungen</translation>
+        <location filename="WindowMain.ui" line="150"/>
+        <source>YES x2</source>
+        <translation></translation>
     </message>
     <message>
-        <location filename="GameWindow.ui" line="170"/>
-        <source>Language</source>
-        <translation>Sprache</translation>
+        <location filename="WindowMain.ui" line="175"/>
+        <source>YES x3</source>
+        <translation></translation>
     </message>
     <message>
-        <location filename="GameWindow.ui" line="181"/>
-        <source>Information</source>
-        <translation>Information</translation>
+        <location filename="WindowMain.ui" line="200"/>
+        <source>NOT</source>
+        <translation></translation>
     </message>
     <message>
-        <location filename="GameWindow.ui" line="193"/>
-        <source>Conjunction</source>
-        <translation>Konjunktion</translation>
+        <location filename="WindowMain.ui" line="225"/>
+        <source>AND</source>
+        <translation></translation>
     </message>
     <message>
-        <location filename="GameWindow.ui" line="198"/>
-        <source>Disjunction</source>
-        <translation>Disjunktion</translation>
+        <location filename="WindowMain.ui" line="250"/>
+        <source>OR</source>
+        <translation></translation>
+    </message>
+    <message utf8="true">
+        <location filename="WindowMain.ui" line="275"/>
+        <source>→</source>
+        <translation></translation>
+    </message>
+    <message utf8="true">
+        <location filename="WindowMain.ui" line="300"/>
+        <source>↔</source>
+        <translation></translation>
     </message>
     <message>
-        <location filename="GameWindow.ui" line="203"/>
-        <source>Negation</source>
-        <translation>Negation</translation>
-    </message>
-    <message>
-        <location filename="GameWindow.ui" line="208"/>
-        <source>Toggleable source</source>
-        <translation>Toggleable Quelle</translation>
-    </message>
-    <message>
-        <location filename="GameWindow.ui" line="213"/>
+        <location filename="WindowMain.ui" line="325"/>
         <source>Indicator</source>
         <translation>Anzeige</translation>
     </message>
     <message>
-        <location filename="GameWindow.ui" line="218"/>
-        <source>Implication</source>
-        <translation>Subjunktion</translation>
+        <location filename="WindowMain.ui" line="331"/>
+        <source>Edit</source>
+        <translation>Bearbeiten</translation>
     </message>
     <message>
-        <location filename="GameWindow.ui" line="223"/>
-        <source>Biconditional</source>
-        <translation>Bikonditional</translation>
+        <location filename="WindowMain.ui" line="355"/>
+        <source>Clear</source>
+        <oldsource>Clear all</oldsource>
+        <translation>Effacer</translation>
     </message>
     <message>
-        <location filename="GameWindow.ui" line="228"/>
+        <location filename="WindowMain.ui" line="364"/>
+        <source>Language</source>
+        <translation>Sprache</translation>
+    </message>
+    <message>
+        <location filename="WindowMain.ui" line="388"/>
         <source>English</source>
         <translation></translation>
     </message>
     <message utf8="true">
-        <location filename="GameWindow.ui" line="233"/>
+        <location filename="WindowMain.ui" line="413"/>
         <source>Русский</source>
         <translation></translation>
     </message>
+    <message>
+        <location filename="WindowMain.ui" line="438"/>
+        <source>Deutsch</source>
+        <translation></translation>
+    </message>
     <message utf8="true">
-        <location filename="GameWindow.ui" line="238"/>
+        <location filename="WindowMain.ui" line="463"/>
         <source>Français</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="GameWindow.ui" line="243"/>
-        <source>Deutsch</source>
-        <translation></translation>
+        <location filename="WindowMain.ui" line="469"/>
+        <source>Information</source>
+        <translation>Information</translation>
     </message>
     <message>
-        <location filename="GameWindow.ui" line="248"/>
+        <location filename="WindowMain.ui" line="493"/>
         <source>About</source>
         <translation>Über das Programm</translation>
-    </message>
-    <message>
-        <location filename="GameWindow.ui" line="261"/>
-        <source>Tautology x2</source>
-        <translation>Tautologie x2</translation>
-    </message>
-    <message>
-        <location filename="GameWindow.ui" line="266"/>
-        <source>Tautology x3</source>
-        <translation>Tautologie x3</translation>
-    </message>
-    <message>
-        <location filename="GameWindow.ui" line="271"/>
-        <source>Tautology</source>
-        <translation>Tautologie</translation>
-    </message>
-    <message>
-        <location filename="GameWindow.ui" line="256"/>
-        <source>Help</source>
-        <translation>Hilfe</translation>
     </message>
 </context>
 </TS>

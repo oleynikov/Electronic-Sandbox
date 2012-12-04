@@ -10,8 +10,6 @@
 #include "_Configuration.h"
 #include "AbsSceneDependentObject.h"
 
-#include <QDebug>
-
 class AbsComponent : public AbsSceneDependentObject
 {
     Q_OBJECT

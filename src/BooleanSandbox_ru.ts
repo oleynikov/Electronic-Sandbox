@@ -4,152 +4,138 @@
 <context>
     <name>AboutWindow</name>
     <message>
-        <location filename="AboutWindow.ui" line="26"/>
+        <location filename="WindowAbout.ui" line="26"/>
         <source>About</source>
         <translation>О программе</translation>
     </message>
     <message utf8="true">
-        <location filename="AboutWindow.ui" line="38"/>
+        <location filename="WindowAbout.ui" line="38"/>
         <source>© Oleynikov Nikolay - 2012</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="AboutWindow.ui" line="57"/>
+        <location filename="WindowAbout.ui" line="57"/>
         <source>Boolean Sandbox</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="AboutWindow.ui" line="73"/>
+        <location filename="WindowAbout.ui" line="73"/>
         <source>v. 1.3.12</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="AboutWindow.ui" line="86"/>
+        <location filename="WindowAbout.ui" line="86"/>
         <source>OleynikovNY@mail.ru</source>
         <translation></translation>
     </message>
 </context>
 <context>
-    <name>GameWindow</name>
+    <name>WindowMain</name>
     <message>
-        <location filename="GameWindow.ui" line="44"/>
-        <source>Boolean sandbox</source>
+        <location filename="WindowMain.ui" line="26"/>
+        <source>Boolean Sandbox</source>
         <translation>Булева песочница</translation>
     </message>
     <message>
-        <location filename="GameWindow.ui" line="140"/>
-        <source>Logic gates</source>
-        <translation>Логические элементы</translation>
+        <location filename="WindowMain.ui" line="76"/>
+        <source>Logic components</source>
+        <translation>Логические компоненты</translation>
     </message>
     <message>
-        <location filename="GameWindow.ui" line="154"/>
-        <source>Logic source</source>
-        <translation>Логические источники</translation>
+        <location filename="WindowMain.ui" line="100"/>
+        <source>Source</source>
+        <translation>Источник</translation>
     </message>
     <message>
-        <location filename="GameWindow.ui" line="160"/>
-        <source>Logic indicators</source>
-        <translation>Логические индикаторы</translation>
+        <location filename="WindowMain.ui" line="125"/>
+        <source>YES</source>
+        <translation></translation>
     </message>
     <message>
-        <location filename="GameWindow.ui" line="166"/>
-        <source>Settings</source>
-        <translation>Настройки</translation>
+        <location filename="WindowMain.ui" line="150"/>
+        <source>YES x2</source>
+        <translation></translation>
     </message>
     <message>
-        <location filename="GameWindow.ui" line="170"/>
+        <location filename="WindowMain.ui" line="175"/>
+        <source>YES x3</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="WindowMain.ui" line="200"/>
+        <source>NOT</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="WindowMain.ui" line="225"/>
+        <source>AND</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="WindowMain.ui" line="250"/>
+        <source>OR</source>
+        <translation></translation>
+    </message>
+    <message utf8="true">
+        <location filename="WindowMain.ui" line="275"/>
+        <source>→</source>
+        <translation></translation>
+    </message>
+    <message utf8="true">
+        <location filename="WindowMain.ui" line="300"/>
+        <source>↔</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="WindowMain.ui" line="325"/>
+        <source>Indicator</source>
+        <translation>Индикат.</translation>
+    </message>
+    <message>
+        <location filename="WindowMain.ui" line="331"/>
+        <source>Edit</source>
+        <translation>Правка</translation>
+    </message>
+    <message>
+        <location filename="WindowMain.ui" line="355"/>
+        <source>Clear</source>
+        <oldsource>Clear all</oldsource>
+        <translation>Очистить</translation>
+    </message>
+    <message>
+        <location filename="WindowMain.ui" line="364"/>
         <source>Language</source>
         <translation>Язык</translation>
     </message>
     <message>
-        <location filename="GameWindow.ui" line="181"/>
-        <source>Information</source>
-        <translation>Информация</translation>
-    </message>
-    <message>
-        <location filename="GameWindow.ui" line="193"/>
-        <source>Conjunction</source>
-        <oldsource>Conjunction (AND)</oldsource>
-        <translation>Конъюнкция</translation>
-    </message>
-    <message>
-        <location filename="GameWindow.ui" line="198"/>
-        <source>Disjunction</source>
-        <oldsource>Disjunction (OR)</oldsource>
-        <translation>Дизъюнкция</translation>
-    </message>
-    <message>
-        <location filename="GameWindow.ui" line="203"/>
-        <source>Negation</source>
-        <oldsource>Negation (NOT)</oldsource>
-        <translation>Отрицание</translation>
-    </message>
-    <message>
-        <location filename="GameWindow.ui" line="208"/>
-        <source>Toggleable source</source>
-        <translation>Переключаемый источник</translation>
-    </message>
-    <message>
-        <location filename="GameWindow.ui" line="213"/>
-        <source>Indicator</source>
-        <translation>Индикатор</translation>
-    </message>
-    <message>
-        <location filename="GameWindow.ui" line="218"/>
-        <source>Implication</source>
-        <oldsource>Implication (→)</oldsource>
-        <translation>Импликация</translation>
-    </message>
-    <message>
-        <location filename="GameWindow.ui" line="223"/>
-        <source>Biconditional</source>
-        <oldsource>Biconditional (↔)</oldsource>
-        <translation>Эквиваленция</translation>
-    </message>
-    <message>
-        <location filename="GameWindow.ui" line="228"/>
+        <location filename="WindowMain.ui" line="388"/>
         <source>English</source>
         <translation></translation>
     </message>
     <message utf8="true">
-        <location filename="GameWindow.ui" line="233"/>
+        <location filename="WindowMain.ui" line="413"/>
         <source>Русский</source>
         <translation></translation>
     </message>
+    <message>
+        <location filename="WindowMain.ui" line="438"/>
+        <source>Deutsch</source>
+        <translation></translation>
+    </message>
     <message utf8="true">
-        <location filename="GameWindow.ui" line="238"/>
+        <location filename="WindowMain.ui" line="463"/>
         <source>Français</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="GameWindow.ui" line="243"/>
-        <source>Deutsch</source>
-        <translation></translation>
+        <location filename="WindowMain.ui" line="469"/>
+        <source>Information</source>
+        <translation>Информация</translation>
     </message>
     <message>
-        <location filename="GameWindow.ui" line="248"/>
+        <location filename="WindowMain.ui" line="493"/>
         <source>About</source>
-        <translation>О программе</translation>
-    </message>
-    <message>
-        <location filename="GameWindow.ui" line="261"/>
-        <source>Tautology x2</source>
-        <translation>Тавтология x2</translation>
-    </message>
-    <message>
-        <location filename="GameWindow.ui" line="266"/>
-        <source>Tautology x3</source>
-        <translation>Тавтология x3</translation>
-    </message>
-    <message>
-        <location filename="GameWindow.ui" line="271"/>
-        <source>Tautology</source>
-        <translation>Тавтология</translation>
-    </message>
-    <message>
-        <location filename="GameWindow.ui" line="256"/>
-        <source>Help</source>
-        <translation>Помощь</translation>
+        <translation>О прогр.</translation>
     </message>
 </context>
 </TS>

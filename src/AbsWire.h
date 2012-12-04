@@ -9,8 +9,6 @@
 #include "AbsSceneDependentObject.h"
 #include "_Configuration.h"
 
-#include <QDebug>
-
 class AbsWire : public AbsSceneDependentObject
 {
 

@@ -165,7 +165,6 @@ class GameWindow : public QWidget
             QTranslator translator;
             translator.load("BooleanSandbox_"+language,"translations");
             qApp->installTranslator(&translator);
-
             this->ui.retranslateUi(this);
 
         }

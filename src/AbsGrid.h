@@ -9,8 +9,6 @@
 #include "_Configuration.h"
 #include "AbsSceneDependentObject.h"
 
-#include <QDebug>
-
 class AbsGrid : public AbsSceneDependentObject
 {
 

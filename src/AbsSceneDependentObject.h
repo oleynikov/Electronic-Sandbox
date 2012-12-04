@@ -5,8 +5,6 @@
 #include <QGraphicsScene>
 #include <QRectF>
 
-#include <QDebug>
-
 class AbsSceneDependentObject : public QGraphicsObject
 {
 

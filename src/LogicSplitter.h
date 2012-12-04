@@ -2,7 +2,6 @@
 #define LOGICALSPLITTER_H
 
 #include "AbsComponentElectronic.h"
-#include <QDebug>
 
 class LogicSplitter : public AbsComponentElectronic
 {
