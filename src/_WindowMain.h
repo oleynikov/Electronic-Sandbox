@@ -1,15 +1,15 @@
 #ifndef GAMEWINDOW_H
 #define GAMEWINDOW_H
 
-#include <QMainWindow>
+#include <QWidget>
 #include <QTranslator>
 #include <QVector>
 #include <QLocale>
 #include <QSystemLocale>
 
-#include "_WindowAbout.h"
 #include "_Configuration.h"
-#include "ui_GameWindow.h"
+#include "_WindowAbout.h"
+#include "ui_WindowMain.h"
 #include "AbsGrid.h"
 #include "AbsWire.h"
 #include "LogicSource.h"
@@ -21,7 +21,7 @@
 #include "LogicBiconditional.h"
 #include "LogicSplitter.h"
 
-class GameWindow : public QMainWindow
+class GameWindow : public QWidget
 {
 
     Q_OBJECT
@@ -38,28 +38,28 @@ class GameWindow : public QMainWindow
                 this->setLanguage(QSystemLocale().fallbackLocale().bcp47Name().section('-',0,0));
 
                 this->graphicsScene.setParent(this);
-                this->ui.graphicsView->setScene(&this->graphicsScene);
+                this->ui.GraphicsView->setScene(&this->graphicsScene);
 
                 this->grid = new AbsGrid();
                 this->graphicsScene.addItem(this->grid);
 
-                QObject::connect(this->ui.addLogicTautology,SIGNAL(triggered()),this,SLOT(componentCreate()));
-                QObject::connect(this->ui.addLogicSourceToggleable,SIGNAL(triggered()),this,SLOT(componentCreate()));
-                QObject::connect(this->ui.addLogicConjunction,SIGNAL(triggered()),this,SLOT(componentCreate()));
-                QObject::connect(this->ui.addLogicDisjunction,SIGNAL(triggered()),this,SLOT(componentCreate()));
-                QObject::connect(this->ui.addLogicNegation,SIGNAL(triggered()),this,SLOT(componentCreate()));
-                QObject::connect(this->ui.addLogicImplication,SIGNAL(triggered()),this,SLOT(componentCreate()));
-                QObject::connect(this->ui.addLogicBiconditional,SIGNAL(triggered()),this,SLOT(componentCreate()));
-                QObject::connect(this->ui.addLogicIndicator,SIGNAL(triggered()),this,SLOT(componentCreate()));
-                QObject::connect(this->ui.addLogicSplitterDouble,SIGNAL(triggered()),this,SLOT(componentCreate()));
-                QObject::connect(this->ui.addLogicSplitterTripple,SIGNAL(triggered()),this,SLOT(componentCreate()));
+                QObject::connect(this->ui.LogicSource,SIGNAL(clicked()),this,SLOT(componentCreate()));
+                QObject::connect(this->ui.LogicTautology1,SIGNAL(clicked()),this,SLOT(componentCreate()));
+                QObject::connect(this->ui.LogicTautology2,SIGNAL(clicked()),this,SLOT(componentCreate()));
+                QObject::connect(this->ui.LogicTautology3,SIGNAL(clicked()),this,SLOT(componentCreate()));
+                QObject::connect(this->ui.LogicConjunction,SIGNAL(clicked()),this,SLOT(componentCreate()));
+                QObject::connect(this->ui.LogicDisjunction,SIGNAL(clicked()),this,SLOT(componentCreate()));
+                QObject::connect(this->ui.LogicNegation,SIGNAL(clicked()),this,SLOT(componentCreate()));
+                QObject::connect(this->ui.LogicImplication,SIGNAL(clicked()),this,SLOT(componentCreate()));
+                QObject::connect(this->ui.LogicBiconditional,SIGNAL(clicked()),this,SLOT(componentCreate()));
+                QObject::connect(this->ui.LogicIndicator,SIGNAL(clicked()),this,SLOT(componentCreate()));
 
-                QObject::connect(this->ui.setLanguageRu,SIGNAL(triggered()),this,SLOT(languageSwitch()));
-                QObject::connect(this->ui.setLanguageEn,SIGNAL(triggered()),this,SLOT(languageSwitch()));
-                QObject::connect(this->ui.setLanguageDe,SIGNAL(triggered()),this,SLOT(languageSwitch()));
-                QObject::connect(this->ui.setLanguageFr,SIGNAL(triggered()),this,SLOT(languageSwitch()));
+                QObject::connect(this->ui.SetLanguageEnglish,SIGNAL(clicked()),this,SLOT(languageSwitch()));
+                QObject::connect(this->ui.SetLanguageRussian,SIGNAL(clicked()),this,SLOT(languageSwitch()));
+                QObject::connect(this->ui.SetLanguageDeutsch,SIGNAL(clicked()),this,SLOT(languageSwitch()));
+                QObject::connect(this->ui.SetLanguageFrench,SIGNAL(clicked()),this,SLOT(languageSwitch()));
 
-                QObject::connect(this->ui.informationAbout,SIGNAL(triggered()),this,SLOT(windowAboutShow()));
+                QObject::connect(this->ui.InformationAbout,SIGNAL(clicked()),this,SLOT(windowAboutShow()));
 
             }
 
@@ -73,12 +73,12 @@ class GameWindow : public QMainWindow
         virtual void                resizeEvent(QResizeEvent* event)
         {
 
-            this->graphicsScene.setSceneRect(this->ui.centralwidget->rect());
+            this->graphicsScene.setSceneRect(this->ui.GraphicsView->rect());
 
         }
 
     private:
-        Ui::GameWindow              ui;
+        Ui::WindowMain              ui;
         AboutWindow*                windowAbout;
         QGraphicsScene              graphicsScene;
         AbsGrid*                    grid;
@@ -177,25 +177,25 @@ class GameWindow : public QMainWindow
             QObject* sender = QObject::sender();
             AbsComponent* component = NULL;
 
-            if (sender == this->ui.addLogicSourceToggleable)
+            if (sender == this->ui.LogicSource)
                 component = new LogicSource();
-            else if (sender == this->ui.addLogicTautology)
+            else if (sender == this->ui.LogicTautology1)
                 component = new LogicSplitter(1);
-            else if (sender == this->ui.addLogicNegation)
-                component = new LogicNegation();
-            else if (sender == this->ui.addLogicConjunction)
-                component = new LogicConjunction();
-            else if (sender == this->ui.addLogicDisjunction)
-                component = new LogicDisjunction();
-            else if (sender == this->ui.addLogicImplication)
-                component = new LogicImplication();
-            else if (sender == this->ui.addLogicBiconditional)
-                component = new LogicBiconditional();
-            else if (sender == this->ui.addLogicSplitterDouble)
+            else if (sender == this->ui.LogicTautology2)
                 component = new LogicSplitter(2);
-            else if (sender == this->ui.addLogicSplitterTripple)
+            else if (sender == this->ui.LogicTautology3)
                 component = new LogicSplitter(3);
-            else if (sender == this->ui.addLogicIndicator)
+            else if (sender == this->ui.LogicNegation)
+                component = new LogicNegation();
+            else if (sender == this->ui.LogicConjunction)
+                component = new LogicConjunction();
+            else if (sender == this->ui.LogicDisjunction)
+                component = new LogicDisjunction();
+            else if (sender == this->ui.LogicImplication)
+                component = new LogicImplication();
+            else if (sender == this->ui.LogicBiconditional)
+                component = new LogicBiconditional();
+            else if (sender == this->ui.LogicIndicator)
                 component = new LogicIndicator();
 
             if (component)
@@ -283,13 +283,13 @@ class GameWindow : public QMainWindow
             QObject* sender = QObject::sender();
             QString language = "en";
 
-            if (sender == this->ui.setLanguageRu)
+            if (sender == this->ui.SetLanguageRussian)
                 language = "ru";
-            if (sender == this->ui.setLanguageEn)
+            if (sender == this->ui.SetLanguageEnglish)
                 language = "en";
-            if (sender == this->ui.setLanguageDe)
+            if (sender == this->ui.SetLanguageDeutsch)
                 language = "de";
-            if (sender == this->ui.setLanguageFr)
+            if (sender == this->ui.SetLanguageFrench)
                 language = "fr";
 
             this->setLanguage(language);

@@ -34,8 +34,8 @@ RESOURCES += \
     resources.qrc
 
 FORMS += \
-    GameWindow.ui \
-    AboutWindow.ui
+    WindowMain.ui \
+    WindowAbout.ui
 
 TRANSLATIONS += \
     BooleanSandbox_ru.ts \
