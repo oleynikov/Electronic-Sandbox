@@ -20,18 +20,12 @@ class AbsComponentToggleableManualEF : public QObject
             switch(eventType)
             {
 
-                case QEvent::GraphicsSceneMouseMove:
-                {
-
-                    emit mouseMove();
-                    break;
-
-                }
-
                 case QEvent::GraphicsSceneMouseRelease:
                 {
 
-                    if (static_cast<QGraphicsSceneMouseEvent*>(event)->button() == Qt::LeftButton)
+                    QGraphicsSceneMouseEvent* gEvent = static_cast<QGraphicsSceneMouseEvent*>(event);
+
+                    if (gEvent->button()==Qt::LeftButton && gEvent->scenePos()==gEvent->buttonDownScenePos(Qt::LeftButton))
                     {
 
                         emit mouseRelease();

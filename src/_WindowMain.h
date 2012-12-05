@@ -21,6 +21,8 @@
 #include "LogicBiconditional.h"
 #include "LogicSplitter.h"
 
+#include <QDebug>
+
 class GameWindow : public QWidget
 {
 
@@ -42,6 +44,7 @@ class GameWindow : public QWidget
 
                 this->grid = new AbsGrid();
                 this->graphicsScene.addItem(this->grid);
+                QObject::connect(this->grid,SIGNAL(select(QRectF)),this,SLOT(select(QRectF)));
 
                 QObject::connect(this->ui.LogicSource,SIGNAL(clicked()),this,SLOT(componentCreate()));
                 QObject::connect(this->ui.LogicTautology1,SIGNAL(clicked()),this,SLOT(componentCreate()));
@@ -59,6 +62,8 @@ class GameWindow : public QWidget
                 QObject::connect(this->ui.SetLanguageDeutsch,SIGNAL(clicked()),this,SLOT(languageSwitch()));
                 QObject::connect(this->ui.SetLanguageFrench,SIGNAL(clicked()),this,SLOT(languageSwitch()));
 
+                QObject::connect(this->ui.DeleteAll,SIGNAL(clicked()),this,SLOT(componentsDeleteAll()));
+                QObject::connect(this->ui.DeleteSelected,SIGNAL(clicked()),this,SLOT(componentsDeleteSelected()));
                 QObject::connect(this->ui.InformationAbout,SIGNAL(clicked()),this,SLOT(windowAboutShow()));
 
             }
@@ -202,18 +207,19 @@ class GameWindow : public QWidget
 
                 this->graphicsScene.addItem(component);
                 this->components.push_back(component);
-                QObject::connect(component,SIGNAL(componentRemove()),this,SLOT(componentRemove()));
+                QObject::connect(component,SIGNAL(componentDrag(QPointF)),this,SLOT(componentDrag(QPointF)));
                 QObject::connect(component,SIGNAL(pinSelect(AbsPin*)),this,SLOT(pinSelect(AbsPin*)));
+                QObject::connect(component,SIGNAL(componentRemove(AbsComponent*)),this,SLOT(componentRemove(AbsComponent*)));
 
             }
 
         }
-        void                        componentRemove()
+        void                        componentRemove(AbsComponent* component)
         {
 
-            AbsComponentElectronic* component = static_cast<AbsComponentElectronic*>(QObject::sender());
+            AbsComponentElectronic* componenElectronic = static_cast<AbsComponentElectronic*>(component);
 
-            QMap<int,AbsPin*> pins = component->pins();
+            QMap<int,AbsPin*> pins = componenElectronic->pins();
             QMap<int,AbsPin*>::iterator pinsItr;
 
             for (pinsItr=pins.begin() ; pinsItr!=pins.end() ; ++pinsItr)
@@ -299,6 +305,80 @@ class GameWindow : public QWidget
 
             this->windowAbout = new AboutWindow(this);
             this->windowAbout->show();
+
+        }
+        void                        componentDrag(QPointF delta)
+        {
+
+            QVector<AbsComponent*>::iterator iComp;
+            AbsComponent* pComp = static_cast<AbsComponent*>(QObject::sender());
+
+            for (iComp=this->components.begin() ; iComp!=this->components.end() ; iComp++)
+            {
+
+                if ((*iComp)->getSelected() && pComp!=(*iComp))
+                {
+
+                    (*iComp)->setPos((*iComp)->scenePos()+delta);
+
+                }
+
+            }
+
+        }
+        void                        componentsDeleteAll()
+        {
+
+            while (!this->components.empty())
+            {
+
+                this->componentRemove(this->components.last());
+
+            }
+
+        }
+        void                        componentsDeleteSelected()
+        {
+
+            QVector<AbsComponent*>::iterator iComp;
+            QList<AbsComponent*> compDelete;
+
+            for (iComp=this->components.begin() ; iComp!=this->components.end() ; iComp++)
+            {
+
+                if ((*iComp)->getSelected())
+                {
+
+                    compDelete.push_back(*iComp);
+
+                }
+
+            }
+
+            while (!compDelete.empty())
+            {
+
+                this->componentRemove(compDelete.last());
+                compDelete.pop_back();
+
+            }
+
+        }
+        void                        select(QRectF selection)
+        {
+
+            QVector<AbsComponent*>::iterator iComp;
+
+            for (iComp=this->components.begin() ; iComp!=this->components.end() ; ++iComp)
+            {
+
+                AbsComponent* comp = *iComp;
+
+                selection.contains(comp->getRect())
+                    ?   comp->setSelected(true)
+                    :   comp->setSelected(false);
+
+            }
 
         }
 

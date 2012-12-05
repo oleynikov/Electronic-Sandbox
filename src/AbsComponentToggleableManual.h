@@ -23,33 +23,13 @@ class AbsComponentToggleableManual : public AbsComponentToggleable
         {
 
             this->installEventFilter(&eventFilter);
-            QObject::connect(&this->eventFilter,SIGNAL(mouseMove()),this,SLOT(mouseMove()));
             QObject::connect(&this->eventFilter,SIGNAL(mouseRelease()),this,SLOT(mouseRelease()));
 
         }
 
     private slots:
-        void                            mouseMove()
-        {
-
-            if (this->mouseDown)
-            {
-
-                this->mouseMoved = true;
-
-            }
-
-        }
         void                            mouseRelease()
         {
-
-            if (this->mouseMoved)
-            {
-
-                this->mouseMoved = false;
-                return;
-
-            }
 
             this->toggle();
 

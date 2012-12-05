@@ -26,8 +26,8 @@ class AbsWire : public AbsSceneDependentObject
             QObject::connect(foo,SIGNAL(pinSwitch()),this,SLOT(pinSwitch()));
             QObject::connect(bar,SIGNAL(pinSwitch()),this,SLOT(pinSwitch()));
 
-            QObject::connect(foo->getHost(),SIGNAL(componentDrag()),this,SLOT(componentDrag()));
-            QObject::connect(bar->getHost(),SIGNAL(componentDrag()),this,SLOT(componentDrag()));
+            QObject::connect(foo->getHost(),SIGNAL(componentDrag(QPointF)),this,SLOT(componentDrag(QPointF)));
+            QObject::connect(bar->getHost(),SIGNAL(componentDrag(QPointF)),this,SLOT(componentDrag(QPointF)));
 
             this->pen.setWidth(Configuration::parameter("wire_width_visible").toInt());
             QString cEnbStr = Configuration::parameter("wire_color_enabled");
@@ -196,7 +196,7 @@ class AbsWire : public AbsSceneDependentObject
         }
 
     private slots:
-        void                    componentDrag()
+        void                    componentDrag(QPointF)
         {
 
             this->pathUpdate();

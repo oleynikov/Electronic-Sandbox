@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 	<parameter name="grid_step_size" value="15" /> <!-- You better don't change this value -->
-	<parameter name="grid_line_size" value="2" />
-	<parameter name="grid_line_color" value="EBEBEB" />
+	<parameter name="grid_line_size" value="1" />
+	<parameter name="grid_line_color" value="235235235" />
+	<parameter name="grid_selection_color" value="221221221" />
 	<parameter name="wire_color_enabled" value="082164000" />
 	<parameter name="wire_color_disabled" value="056067082" />
 	<parameter name="wire_width_visible" value="3" />

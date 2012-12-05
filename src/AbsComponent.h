@@ -27,10 +27,11 @@ class AbsComponent : public AbsSceneDependentObject
                                             iconName(iconName),
                                             bordered(bordered),
                                             dragable(dragable),
-                                            mouseDown(false)
+                                            selected(false)
         {
 
             this->iconUpdate();
+            this->gridStep = Configuration::parameter("grid_step_size").toInt();
 
         }
         void            setIcon(QString iconName)
@@ -68,111 +69,102 @@ class AbsComponent : public AbsSceneDependentObject
             return false;
 
         }
-        bool            getBordered(void) const
+        bool            setSelected(bool selected)
+        {
+
+            if (this->selected != selected)
+            {
+
+                this->selected = selected;
+                this->reDraw();
+                return true;
+
+            }
+
+            return false;
+
+        }
+        bool            getBordered(void)const
         {
 
            return this->bordered;
 
         }
-        bool            getDragable(void) const
+        bool            getDragable(void)const
         {
 
             return this->dragable;
 
         }
-        virtual void    mousePressEvent(QGraphicsSceneMouseEvent* event)
+        bool            getSelected(void)const
         {
 
-            if (event->button() == Qt::LeftButton)
-            {
+            return this->selected;
 
-                this->mouseDown = true;
+        }
+        QRectF          getRect(void)const
+        {
 
-                if (this->getDragable())
-                {
+            QRectF rect;
 
-                    this->mouseDownPoint = event->pos();
+            rect.setTopLeft(this->scenePos());
+            rect.setSize(this->boundingRect().size());
 
-                }
+            return rect;
 
-            }
+        }
+        virtual void    mousePressEvent(QGraphicsSceneMouseEvent*)
+        {
 
         }
         virtual void    mouseMoveEvent(QGraphicsSceneMouseEvent* event)
         {
 
-            if (this->dragable && this->mouseDown)
+            if (this->dragable && event->buttons() == Qt::LeftButton)
             {
 
-                int gridStepSize = Configuration::parameter("grid_step_size").toInt();
-                QPointF positionNew = event->scenePos()-this->mouseDownPoint;
-                QPointF positionDelta = positionNew - this->scenePos();
+                QPointF buttonDownPos = event->buttonDownPos(Qt::LeftButton);
+                QPointF positionNew = event->scenePos() - buttonDownPos;
+                QPointF dragDeltaRaw = positionNew - this->scenePos();
+                QPointF dragDelta = QPointF();
 
-                if (abs(positionDelta.x()) >= gridStepSize)
+                if (abs(dragDeltaRaw.x()) >= this->gridStep)
                 {
-
                     if (positionNew.x() < 0)
                         positionNew.setX(0);
                     else if (positionNew.x() > this->pointMax.x())
                         positionNew.setX(this->pointMax.x());
                     else
                     {
-                        int xDelta = positionDelta.x()/gridStepSize;
-                        positionNew.setX(this->pos().x()+xDelta*gridStepSize);
+                        int xDragDeltaSteps = dragDeltaRaw.x() / this->gridStep;
+                        dragDelta.setX(xDragDeltaSteps * this->gridStep);
+                        positionNew.setX(this->pos().x() + dragDelta.x());
                     }
-
-                    if(this->x() != positionNew.x())
-                    {
-
-                        this->setX(positionNew.x());
-                        emit componentDrag();
-
-                    }
-
+                    this->setX(positionNew.x());
+                    emit componentDrag(dragDelta);
                 }
 
-                if (abs(positionDelta.y()) >= gridStepSize)
+                if (abs(dragDeltaRaw.y()) >= this->gridStep)
                 {
-
                     if (positionNew.y() < 0)
                         positionNew.setY(0);
                     else if (positionNew.y() > this->pointMax.y())
                         positionNew.setY(this->pointMax.y());
                     else
                     {
-                        int yDelta = positionDelta.y()/gridStepSize;
-                        positionNew.setY(this->pos().y()+yDelta*gridStepSize);
+                        int yDragDeltaSteps = dragDeltaRaw.y() / this->gridStep;
+                        dragDelta.setY(yDragDeltaSteps * this->gridStep);
+                        positionNew.setY(this->pos().y() + dragDelta.y());
                     }
-
-                    if(this->y() != positionNew.y())
-                    {
-
-                        this->setY(positionNew.y());
-                        emit componentDrag();
-
-                    }
-
+                    this->setY(positionNew.y());
+                    emit componentDrag(dragDelta);
                 }
 
             }
 
         }
-        virtual void    mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
+        virtual void    mouseReleaseEvent(QGraphicsSceneMouseEvent*)
         {
-
-            /*
-
-                Mouse released on the sprite
-
-            */
-
-
-            if (this->mouseDown)
-            {
-
-                this->mouseDown = false;
-
-            }
 
         }
         virtual void    mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
@@ -181,7 +173,7 @@ class AbsComponent : public AbsSceneDependentObject
             if (event->button() == Qt::RightButton)
             {
 
-                emit this->componentRemove();
+                emit this->componentRemove(this);
 
             }
 
@@ -195,17 +187,26 @@ class AbsComponent : public AbsSceneDependentObject
         virtual void    paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0)
         {
 
-            QPixmap spritePixmap(this->iconPath);
-            QBrush spriteBrush(spritePixmap);
+            QBrush brush;
+            QPen pen(Qt::NoPen);
 
-            if (!bordered)
+            painter->setPen(pen);
+
+            if (this->selected)
             {
 
-                painter->setPen(Qt::NoPen);
+                brush.setStyle(Qt::SolidPattern);
+                brush.setColor(QColor(78,100,133));
+                painter->setBrush(brush);
+
+                painter->drawRoundRect(0,0,this->width,this->height,10,10);
 
             }
 
-            painter->setBrush(spriteBrush);
+            QPixmap pixmap(this->iconPath);
+            brush.setTexture(pixmap);
+            painter->setBrush(brush);
+
             painter->drawRect(0,0,this->width,this->height);
 
         }
@@ -217,9 +218,9 @@ class AbsComponent : public AbsSceneDependentObject
         QString         iconPath;
         bool            bordered;
         bool            dragable;
+        bool            selected;
         QPointF         pointMax;
-        bool            mouseDown;
-        QPointF         mouseDownPoint;
+        int             gridStep;
         void            reDraw(void)
         {
 
@@ -245,8 +246,8 @@ class AbsComponent : public AbsSceneDependentObject
         }
 
     signals:
-        void            componentDrag();
-        void            componentRemove();
+        void            componentDrag(QPointF);
+        void            componentRemove(AbsComponent*);
 
 };
 
