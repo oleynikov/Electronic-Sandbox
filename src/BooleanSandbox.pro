@@ -5,6 +5,13 @@ SOURCES += \
     _Configuration.cpp
 
 HEADERS += \
+    AEventFilter.h \
+    AGraphicsController.h \
+    AGraphicsSandbox.h \
+    AInteractiveScene.h \
+    BooleanController.h \
+    BooleanEventFilter.h \
+    BooleanSandbox.h \
     AbsComponent.h \
     AbsComponentElectronic.h \
     AbsPin.h \

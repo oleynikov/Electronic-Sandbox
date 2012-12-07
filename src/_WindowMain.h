@@ -6,14 +6,26 @@
 #include <QLocale>
 #include <QSystemLocale>
 
-#include "_Configuration.h"
-#include "_WindowAbout.h"
-#include "ui_WindowMain.h"
+#include <_Configuration.h>
+#include <_WindowAbout.h>
+#include <ui_WindowMain.h>
+#include <BooleanSandbox.h>
 
-#include <AbsComponentController.h>
+
+#include <AbsComponent.h>
+#include <AbsComponentElectronic.h>
 #include <AbsComponentSandbox.h>
+#include <AbsPin.h>
+#include <AbsWire.h>
+#include "LogicSource.h"
+#include "LogicIndicator.h"
+#include "LogicConjunction.h"
+#include "LogicDisjunction.h"
+#include "LogicNegation.h"
+#include "LogicImplication.h"
+#include "LogicBiconditional.h"
+#include "LogicSplitter.h"
 
-#include <QDebug>
 
 class GameWindow : public QWidget
 {
@@ -30,10 +42,7 @@ class GameWindow : public QWidget
                 this->ui.setupUi(this);
                 this->setLanguage(QSystemLocale().fallbackLocale().bcp47Name().section('-',0,0));
 
-                this->componentController = new AbsComponentController();
-                this->componentSandbox = new AbsComponentSandbox();
-                this->componentController->setComponentSandbox(this->componentSandbox);
-
+/*
                 this->ui.GraphicsView->setScene(this->componentSandbox->getGraphicsScene());
                 this->ui.GraphicsView->setMouseTracking(true);
 
@@ -58,7 +67,7 @@ class GameWindow : public QWidget
                 QObject::connect(this->ui.DeleteAll,SIGNAL(clicked()),this->componentController,SLOT(componentsRemoveAll()));
                 QObject::connect(this->ui.DeleteSelected,SIGNAL(clicked()),this->componentController,SLOT(componentsRemoveSelected()));
                 QObject::connect(this->ui.InformationAbout,SIGNAL(clicked()),this,SLOT(windowAboutShow()));
-
+*/
             }
 
         }
@@ -78,8 +87,6 @@ class GameWindow : public QWidget
     private:
         Ui::WindowMain              ui;
         AboutWindow*                windowAbout;
-        AbsComponentController*     componentController;
-        AbsComponentSandbox*        componentSandbox;
         void                        setLanguage(QString language)
         {
 
@@ -118,7 +125,7 @@ class GameWindow : public QWidget
             else if (sender == this->ui.LogicIndicator)
                 component = new LogicIndicator();
 
-            this->componentController->componentAdd(component);
+            //this->componentController->componentAdd(component);
 
         }
         void                        languageSwitch()
