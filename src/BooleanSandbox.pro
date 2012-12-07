@@ -26,7 +26,9 @@ HEADERS += \
     AbsSceneDependentObject.h \
     _WindowMain.h \
     _WindowAbout.h \
-    _Configuration.h
+    _Configuration.h \
+    AbsComponentController.h \
+    AbsComponentSandbox.h
 
 QT += xml
 

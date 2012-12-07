@@ -113,60 +113,6 @@ class AbsComponent : public AbsSceneDependentObject
             return rect;
 
         }
-        virtual void    mousePressEvent(QGraphicsSceneMouseEvent*)
-        {
-
-        }
-        virtual void    mouseMoveEvent(QGraphicsSceneMouseEvent* event)
-        {
-
-            if (this->dragable && event->buttons() == Qt::LeftButton)
-            {
-
-                QPointF buttonDownPos = event->buttonDownPos(Qt::LeftButton);
-                QPointF positionNew = event->scenePos() - buttonDownPos;
-                QPointF dragDeltaRaw = positionNew - this->scenePos();
-                QPointF dragDelta = QPointF();
-
-                if (abs(dragDeltaRaw.x()) >= this->gridStep)
-                {
-                    if (positionNew.x() < 0)
-                        positionNew.setX(0);
-                    else if (positionNew.x() > this->pointMax.x())
-                        positionNew.setX(this->pointMax.x());
-                    else
-                    {
-                        int xDragDeltaSteps = dragDeltaRaw.x() / this->gridStep;
-                        dragDelta.setX(xDragDeltaSteps * this->gridStep);
-                        positionNew.setX(this->pos().x() + dragDelta.x());
-                    }
-                    this->setX(positionNew.x());
-                    emit componentDrag(dragDelta);
-                }
-
-                if (abs(dragDeltaRaw.y()) >= this->gridStep)
-                {
-                    if (positionNew.y() < 0)
-                        positionNew.setY(0);
-                    else if (positionNew.y() > this->pointMax.y())
-                        positionNew.setY(this->pointMax.y());
-                    else
-                    {
-                        int yDragDeltaSteps = dragDeltaRaw.y() / this->gridStep;
-                        dragDelta.setY(yDragDeltaSteps * this->gridStep);
-                        positionNew.setY(this->pos().y() + dragDelta.y());
-                    }
-                    this->setY(positionNew.y());
-                    emit componentDrag(dragDelta);
-                }
-
-            }
-
-        }
-        virtual void    mouseReleaseEvent(QGraphicsSceneMouseEvent*)
-        {
-
-        }
         virtual void    mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
         {
 

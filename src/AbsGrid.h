@@ -97,8 +97,6 @@ class AbsGrid : public AbsSceneDependentObject
 
                 this->update(this->boundingRect());
 
-                emit this->select(this->selection);
-
             }
 
         }
@@ -107,6 +105,8 @@ class AbsGrid : public AbsSceneDependentObject
 
             if (this->selection.size().width() != 0)
             {
+
+                emit this->select(this->selection);
 
                 this->selection = QRectF(0,0,0,0);
                 this->update(this->boundingRect());

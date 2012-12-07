@@ -3,23 +3,15 @@
 
 #include <QWidget>
 #include <QTranslator>
-#include <QVector>
 #include <QLocale>
 #include <QSystemLocale>
 
 #include "_Configuration.h"
 #include "_WindowAbout.h"
 #include "ui_WindowMain.h"
-#include "AbsGrid.h"
-#include "AbsWire.h"
-#include "LogicSource.h"
-#include "LogicIndicator.h"
-#include "LogicConjunction.h"
-#include "LogicDisjunction.h"
-#include "LogicNegation.h"
-#include "LogicImplication.h"
-#include "LogicBiconditional.h"
-#include "LogicSplitter.h"
+
+#include <AbsComponentController.h>
+#include <AbsComponentSandbox.h>
 
 #include <QDebug>
 
@@ -29,141 +21,65 @@ class GameWindow : public QWidget
     Q_OBJECT
 
     public:
-        GameWindow() : pinActive(NULL)
+                                    GameWindow()
         {
 
             if (Configuration::load())
             {
 
                 this->ui.setupUi(this);
-
                 this->setLanguage(QSystemLocale().fallbackLocale().bcp47Name().section('-',0,0));
 
-                this->graphicsScene.setParent(this);
-                this->ui.GraphicsView->setScene(&this->graphicsScene);
+                this->componentController = new AbsComponentController();
+                this->componentSandbox = new AbsComponentSandbox();
+                this->componentController->setComponentSandbox(this->componentSandbox);
 
-                this->grid = new AbsGrid();
-                this->graphicsScene.addItem(this->grid);
-                QObject::connect(this->grid,SIGNAL(select(QRectF)),this,SLOT(select(QRectF)));
+                this->ui.GraphicsView->setScene(this->componentSandbox->getGraphicsScene());
+                this->ui.GraphicsView->setMouseTracking(true);
 
-                QObject::connect(this->ui.LogicSource,SIGNAL(clicked()),this,SLOT(componentCreate()));
-                QObject::connect(this->ui.LogicTautology1,SIGNAL(clicked()),this,SLOT(componentCreate()));
-                QObject::connect(this->ui.LogicTautology2,SIGNAL(clicked()),this,SLOT(componentCreate()));
-                QObject::connect(this->ui.LogicTautology3,SIGNAL(clicked()),this,SLOT(componentCreate()));
-                QObject::connect(this->ui.LogicConjunction,SIGNAL(clicked()),this,SLOT(componentCreate()));
-                QObject::connect(this->ui.LogicDisjunction,SIGNAL(clicked()),this,SLOT(componentCreate()));
-                QObject::connect(this->ui.LogicNegation,SIGNAL(clicked()),this,SLOT(componentCreate()));
-                QObject::connect(this->ui.LogicImplication,SIGNAL(clicked()),this,SLOT(componentCreate()));
-                QObject::connect(this->ui.LogicBiconditional,SIGNAL(clicked()),this,SLOT(componentCreate()));
-                QObject::connect(this->ui.LogicIndicator,SIGNAL(clicked()),this,SLOT(componentCreate()));
+                QObject::connect(this,SIGNAL(resize(QRectF)),this->componentSandbox,SLOT(resize(QRectF)));
+
+                QObject::connect(this->ui.LogicSource,SIGNAL(clicked()),this,SLOT(componentAdd()));
+                QObject::connect(this->ui.LogicTautology1,SIGNAL(clicked()),this,SLOT(componentAdd()));
+                QObject::connect(this->ui.LogicTautology2,SIGNAL(clicked()),this,SLOT(componentAdd()));
+                QObject::connect(this->ui.LogicTautology3,SIGNAL(clicked()),this,SLOT(componentAdd()));
+                QObject::connect(this->ui.LogicConjunction,SIGNAL(clicked()),this,SLOT(componentAdd()));
+                QObject::connect(this->ui.LogicDisjunction,SIGNAL(clicked()),this,SLOT(componentAdd()));
+                QObject::connect(this->ui.LogicNegation,SIGNAL(clicked()),this,SLOT(componentAdd()));
+                QObject::connect(this->ui.LogicImplication,SIGNAL(clicked()),this,SLOT(componentAdd()));
+                QObject::connect(this->ui.LogicBiconditional,SIGNAL(clicked()),this,SLOT(componentAdd()));
+                QObject::connect(this->ui.LogicIndicator,SIGNAL(clicked()),this,SLOT(componentAdd()));
 
                 QObject::connect(this->ui.SetLanguageEnglish,SIGNAL(clicked()),this,SLOT(languageSwitch()));
                 QObject::connect(this->ui.SetLanguageRussian,SIGNAL(clicked()),this,SLOT(languageSwitch()));
                 QObject::connect(this->ui.SetLanguageDeutsch,SIGNAL(clicked()),this,SLOT(languageSwitch()));
                 QObject::connect(this->ui.SetLanguageFrench,SIGNAL(clicked()),this,SLOT(languageSwitch()));
 
-                QObject::connect(this->ui.DeleteAll,SIGNAL(clicked()),this,SLOT(componentsDeleteAll()));
-                QObject::connect(this->ui.DeleteSelected,SIGNAL(clicked()),this,SLOT(componentsDeleteSelected()));
+                QObject::connect(this->ui.DeleteAll,SIGNAL(clicked()),this->componentController,SLOT(componentsRemoveAll()));
+                QObject::connect(this->ui.DeleteSelected,SIGNAL(clicked()),this->componentController,SLOT(componentsRemoveSelected()));
                 QObject::connect(this->ui.InformationAbout,SIGNAL(clicked()),this,SLOT(windowAboutShow()));
 
             }
 
         }
-        ~GameWindow()
+                                    ~GameWindow()
         {
 
         }
 
     protected:
-        virtual void                resizeEvent(QResizeEvent* event)
+        virtual void                resizeEvent(QResizeEvent*)
         {
 
-            this->graphicsScene.setSceneRect(this->ui.GraphicsView->rect());
+            emit this->resize(this->ui.GraphicsView->rect());
 
         }
 
     private:
         Ui::WindowMain              ui;
         AboutWindow*                windowAbout;
-        QGraphicsScene              graphicsScene;
-        AbsGrid*                    grid;
-        AbsPin*                     pinActive;
-        QVector<AbsComponent*>      components;
-        QVector<AbsWire*>           wires;
-
-        void                        connectionEstablish(AbsPin* foo, AbsPin* bar)
-        {
-
-            //  foo & bar must belong to different componnets
-            if (foo->getDirection()!=bar->getDirection() && foo->getHost() != bar->getHost())
-            {
-
-                //  Destroying old connections
-                AbsWire* wireOld = NULL;
-                wireOld = this->getWire(foo);
-                if (wireOld)
-                    this->connectionRemove(wireOld);
-                wireOld = this->getWire(bar);
-                if (wireOld)
-                    this->connectionRemove(wireOld);
-
-                //  Establishing a new connection
-
-                AbsPin::connect(foo,bar);
-                AbsWire* wire = new AbsWire(foo,bar);
-                this->wires.push_back(wire);
-                this->graphicsScene.addItem(wire);
-                foo->setSelected(false);
-                bar->setSelected(false);
-                this->pinActive = NULL;
-
-                QObject::connect(wire,SIGNAL(deleted(AbsWire*)),this,SLOT(wireRemove(AbsWire*)));
-
-            }
-
-            //  if not, reseting them
-            else
-            {
-
-                foo->setSelected(false);
-                bar->setSelected(false);
-                this->pinActive = NULL;
-
-            }
-
-        }
-        void                        connectionRemove(AbsWire* wire)
-        {
-
-            AbsPin* pinFoo = wire->pin(0);
-            AbsPin* pinBar = wire->pin(1);
-            AbsPin::disconnect(pinFoo,pinBar);
-
-            int wireId = this->wires.lastIndexOf(wire);
-            this->wires.remove(wireId);
-            delete wire;
-
-        }
-        AbsWire*                    getWire(AbsPin *pin)
-        {
-
-            QVector<AbsWire*>::iterator wireItr;
-
-            for(wireItr=this->wires.begin() ; wireItr!=this->wires.end() ; ++wireItr)
-            {
-
-                if((*wireItr)->pin(0)==pin || (*wireItr)->pin(1)==pin)
-                {
-
-                    return *wireItr;
-
-                }
-
-            }
-
-            return NULL;
-
-        }
+        AbsComponentController*     componentController;
+        AbsComponentSandbox*        componentSandbox;
         void                        setLanguage(QString language)
         {
 
@@ -175,11 +91,11 @@ class GameWindow : public QWidget
         }
 
     private slots:
-        void                        componentCreate()
+        void                        componentAdd()
         {
 
             QObject* sender = QObject::sender();
-            AbsComponent* component = NULL;
+            AbsComponentElectronic* component = NULL;
 
             if (sender == this->ui.LogicSource)
                 component = new LogicSource();
@@ -202,84 +118,7 @@ class GameWindow : public QWidget
             else if (sender == this->ui.LogicIndicator)
                 component = new LogicIndicator();
 
-            if (component)
-            {
-
-                this->graphicsScene.addItem(component);
-                this->components.push_back(component);
-                QObject::connect(component,SIGNAL(componentDrag(QPointF)),this,SLOT(componentDrag(QPointF)));
-                QObject::connect(component,SIGNAL(pinSelect(AbsPin*)),this,SLOT(pinSelect(AbsPin*)));
-                QObject::connect(component,SIGNAL(componentRemove(AbsComponent*)),this,SLOT(componentRemove(AbsComponent*)));
-
-            }
-
-        }
-        void                        componentRemove(AbsComponent* component)
-        {
-
-            AbsComponentElectronic* componenElectronic = static_cast<AbsComponentElectronic*>(component);
-
-            QMap<int,AbsPin*> pins = componenElectronic->pins();
-            QMap<int,AbsPin*>::iterator pinsItr;
-
-            for (pinsItr=pins.begin() ; pinsItr!=pins.end() ; ++pinsItr)
-            {
-
-                AbsWire* wire = this->getWire(pinsItr.value());
-                if (wire)
-                {
-
-                    this->connectionRemove(wire);
-
-                }
-
-            }
-
-            int componentId = this->components.lastIndexOf(component);
-            delete component;
-            this->components.remove(componentId);
-
-        }
-        void                        pinSelect(AbsPin* pin)
-        {
-
-            //  If pin was activated
-            if (pin->getSelected())
-            {
-
-                //  And there already is an activated one
-                if (this->pinActive)
-                {
-
-                    //  Establish connection
-                    this->connectionEstablish(this->pinActive,pin);
-
-                }
-
-                //  And no pin was previously activated
-                else
-                {
-
-                    //  Set an active pin
-                    this->pinActive = pin;
-
-                }
-            }
-
-            //  If pin is deactivated
-            else
-            {
-
-                //  Reset the active pin
-                this->pinActive = NULL;
-
-            }
-
-        }
-        void                        wireRemove(AbsWire* wire)
-        {
-
-            this->connectionRemove(wire);
+            this->componentController->componentAdd(component);
 
         }
         void                        languageSwitch()
@@ -307,80 +146,9 @@ class GameWindow : public QWidget
             this->windowAbout->show();
 
         }
-        void                        componentDrag(QPointF delta)
-        {
 
-            QVector<AbsComponent*>::iterator iComp;
-            AbsComponent* pComp = static_cast<AbsComponent*>(QObject::sender());
-
-            for (iComp=this->components.begin() ; iComp!=this->components.end() ; iComp++)
-            {
-
-                if ((*iComp)->getSelected() && pComp!=(*iComp))
-                {
-
-                    (*iComp)->setPos((*iComp)->scenePos()+delta);
-
-                }
-
-            }
-
-        }
-        void                        componentsDeleteAll()
-        {
-
-            while (!this->components.empty())
-            {
-
-                this->componentRemove(this->components.last());
-
-            }
-
-        }
-        void                        componentsDeleteSelected()
-        {
-
-            QVector<AbsComponent*>::iterator iComp;
-            QList<AbsComponent*> compDelete;
-
-            for (iComp=this->components.begin() ; iComp!=this->components.end() ; iComp++)
-            {
-
-                if ((*iComp)->getSelected())
-                {
-
-                    compDelete.push_back(*iComp);
-
-                }
-
-            }
-
-            while (!compDelete.empty())
-            {
-
-                this->componentRemove(compDelete.last());
-                compDelete.pop_back();
-
-            }
-
-        }
-        void                        select(QRectF selection)
-        {
-
-            QVector<AbsComponent*>::iterator iComp;
-
-            for (iComp=this->components.begin() ; iComp!=this->components.end() ; ++iComp)
-            {
-
-                AbsComponent* comp = *iComp;
-
-                selection.contains(comp->getRect())
-                    ?   comp->setSelected(true)
-                    :   comp->setSelected(false);
-
-            }
-
-        }
+    signals:
+        void                        resize(QRectF);
 
 };
 

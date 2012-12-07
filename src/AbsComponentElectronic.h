@@ -5,6 +5,10 @@
 #include "AbsComponent.h"
 #include "LogicPin.h"
 
+typedef QMap<int,AbsPin*> Pins;
+typedef Pins::iterator PinItr;
+
+
 enum ComponentType
 {
 
